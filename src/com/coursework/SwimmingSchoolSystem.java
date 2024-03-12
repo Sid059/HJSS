@@ -1,4 +1,4 @@
-package com.UI;
+package com.coursework;
 
 import java.util.ArrayList;
 import java.util.HashMap;

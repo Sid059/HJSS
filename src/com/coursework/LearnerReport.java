@@ -1,4 +1,4 @@
-package com.UI;
+package com.coursework;
 
 public class LearnerReport {
 }
