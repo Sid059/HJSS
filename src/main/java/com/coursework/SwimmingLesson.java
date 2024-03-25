@@ -3,7 +3,7 @@ package com.coursework;
 import java.util.ArrayList;
 
 public class SwimmingLesson {
-    private String day;
+    /*private String day;
     private String time;
     private int gradeLevel;
     private Coach coach;
@@ -67,6 +67,6 @@ public class SwimmingLesson {
         // Check for other criteria as needed
         // If all criteria are met, booking is allowed
         return true;
-    }
+    }*/
 }
 
