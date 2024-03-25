@@ -10,10 +10,13 @@ public class SwimmingSchoolSystem {
     private HashMap<Integer,Learner> swimmingschool;
     //arraylist to store preregistered coaches(4)
     private ArrayList<Coach> coaches;
+    public static ArrayList <SwimmingLesson> bookings;
     public SwimmingSchoolSystem(){
         coaches = new ArrayList<Coach>();
         learners = new ArrayList<Learner>();
         swimmingschool = new HashMap<Integer, Learner>() ;
+        //creating a list to store the bookings of every learner
+        this.bookings = new ArrayList<SwimmingLesson>();
     }
     //preregistered coaches(4)
     Coach coach1 = new Coach("Amit Bhadana");
@@ -22,7 +25,7 @@ public class SwimmingSchoolSystem {
     Coach coach4 = new Coach("Sandip Singh");
 
     //preregistered learners(11)
-    Learner stud1 = new Learner("Siddharth Rai", 2207,"Male",7,4,07776735735);
+    /*Learner stud1 = new Learner("Siddharth Rai", 2207,"Male",7,4,07776735735);
     Learner stud2 = new Learner("Sahil Gurung",1329,"Male",6,1,07766347322);
     Learner stud3 = new Learner("Sohit Rai",1256,"Male",5,2,07756735455);
     Learner stud4 = new Learner("Bikash Chhetri",2157,"Male",8,1,07746734335);
@@ -82,5 +85,5 @@ public class SwimmingSchoolSystem {
 //            System.out.println(stud.toString());
 //        }
 //    }
-    public void generateMonthlyReport(){}
+    public void generateMonthlyReport(){}  */
 }
