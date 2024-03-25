@@ -22,16 +22,6 @@ public class Learner {
         this.bookedLessonIds = new HashSet<>();
     }
 
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-    public void setEmergencyContact(String emergencyContact) {
-        this.emergencyContact = emergencyContact;
-    }
     //Getters
     public String getName() {
         return name;

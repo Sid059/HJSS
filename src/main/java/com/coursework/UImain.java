@@ -37,6 +37,7 @@ public class UImain {
                     break;
                 case 0:
                     flag = false;
+                    System.out.println("Exiting system...");
                     break;
                 default: System.out.println("please select an appropriate action!");
             }

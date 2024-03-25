@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SwimmingSchoolSystem {
-    //array list to store learners(junior learners)
-    private List<Learner> learners = new ArrayList<>();
+    private List<Learner> learners = new ArrayList<>(); //array list to store learners(junior learners)
+    private List<Coach> coaches = new ArrayList<>(); //array list to store coaches
     public SwimmingSchoolSystem(){
+        initializeCoaches();
         initializePreregisteredLearners();
     }
-
     private void initializePreregisteredLearners(){
         learners.add(new Learner("Siddharth Rai", 'M',7,"07776735735",4));
         learners.add(new Learner("Sahil Gurung",'M',6,"07766347322",1));
@@ -23,6 +23,11 @@ public class SwimmingSchoolSystem {
         learners.add(new Learner("Shahzab Ahmad Khan",'M',7,"07746734205",3));
         learners.add(new Learner("Abdul Rahman Ampili",'M',7,"07746734215",2));
         learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",3));
+    }
+    private void initializeCoaches() {
+        coaches.add(new Coach("Donald",22056));
+        coaches.add(new Coach("Ralph",39728));
+        coaches.add(new Coach("Smith",77831));
     }
 
     //method to register a new learner
