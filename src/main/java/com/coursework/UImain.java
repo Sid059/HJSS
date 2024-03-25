@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 public class UImain {
     public static void main(String[] args) {
+        SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
+
         Scanner sc = new Scanner(System.in);
         boolean flag = true;
 
@@ -26,8 +28,12 @@ public class UImain {
                 case 5: //monthly coach report
                     break;
                 case 6: //register a new learner
-                        Learner l1 = new Learner("sid",'M',5,"9932698272",4);
-                        System.out.println(l1.getId());
+                    try {
+                        sss.registerNewLearner();
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 0:
                     flag = false;

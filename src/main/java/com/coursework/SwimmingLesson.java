@@ -1,8 +1,10 @@
 package com.coursework;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SwimmingLesson {
+
     /*private String day;
     private String time;
     private int gradeLevel;

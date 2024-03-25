@@ -16,49 +16,23 @@ public class Learner {
         this.id = (int) (Math.random() * 9000) + 1000;
         this.name = name;
         this.gender = gender;
-        try {
-            setAge(age);
-        }
-        catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            return;
-        }
+        this.age = age;
         this.emergencyContact = emergencyContact;
-        try {
-            setGradeLevel(gradeLevel);
-        }
-        catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            return;
-        }
+        this.gradeLevel = gradeLevel;
         this.bookedLessonIds = new HashSet<>();
     }
 
-    // Setters and Getters
+    // Setters
     public void setName(String name) {
         this.name = name;
     }
     public void setGender(char gender) {
         this.gender = gender;
     }
-    public void setAge(int age) {
-        if (age >= 4 && age <= 11) {
-            this.age = age;
-        } else {
-            throw new IllegalArgumentException("Age must be between 4 and 11.");
-        }
-    }
     public void setEmergencyContact(String emergencyContact) {
         this.emergencyContact = emergencyContact;
     }
-    public void setGradeLevel(int gradeLevel) {
-        if (gradeLevel >= 0 && gradeLevel <= 5) {
-            this.gradeLevel = gradeLevel;
-        } else {
-            throw new IllegalArgumentException("Grade level must be between 0 and 5.");
-        }
-    }
-
+    //Getters
     public String getName() {
         return name;
     }
@@ -103,5 +77,10 @@ public class Learner {
     }
     public Set<Integer> getBookedLessonIds() {
         return new HashSet<>(bookedLessonIds); // Return a copy to protect the internal set
+    }
+
+    //displaying learner details
+    public String toString(){
+        return  "Name : " +getName()+ "\nId : " +getId()+ "\nAge : " + getAge()+ "\nGender : " +getGender()+ "\nGrade : " +getGradeLevel()+ "\nContact number : " +getEmergencyContact()+"\n";
     }
 }
