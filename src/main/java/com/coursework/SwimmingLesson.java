@@ -1,74 +1,119 @@
 package com.coursework;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SwimmingLesson {
+    private static int nextId = 1;
+    private final int id;
+    private int grade;
+    private String day;
+    private String timeSlot;
+    private int coachId;
+    private Set<Integer> learnerIds;
+    private final int maxLearners = 4;
+    private Map<Integer, String> reviews; // Learner ID to review text
+    private Map<Integer, Integer> ratings; // Learner ID to rating
 
-    /*private String day;
-    private String time;
-    private int gradeLevel;
-    private Coach coach;
-    private int capacity;       //need to set the capacity
-    private ArrayList<Learner> allLearners;  // Reference to the list of all learners in SwimmingSchoolSystem
-    private String status;
-
-    public SwimmingLesson(String day, String time, int gradeLevel, Coach coach, int capacity, ArrayList<Learner> allLearners) {
+    public SwimmingLesson(int grade, String day, String timeSlot, int coachId) {
+        this.id = nextId++;
+        this.grade = grade;
         this.day = day;
-        this.time = time;
-        this.gradeLevel = gradeLevel;
-        this.coach = coach;
-        this.capacity = capacity;
-        this.allLearners = allLearners;
-        this.status = "available";  // Initially set to available
+        this.timeSlot = timeSlot;
+        this.coachId = coachId;
+        this.learnerIds = new HashSet<>();
+        this.reviews = new HashMap<>();
+        this.ratings = new HashMap<>();
+    }
+    // Getters
+    public int getId() {
+        return id;
     }
 
-    public void bookLearner(Learner learner) {
-        if (isBookingAllowed(learner)) {
-            allLearners.add(learner);  // Add learner to the list of all learners
-            System.out.println(learner.getLearnerName() + " booked for " + day + " at " + time);
-            // Update status after booking
-            if (allLearners.size() >= capacity) {
-                status = "full";
-            }
-        } else {
-            System.out.println("Booking not allowed for " + learner.getLearnerName() +
-                    ". Lesson is already full or learner's grade level is not suitable.");
-        }
+    public int getGrade() {
+        return grade;
     }
 
-    public void cancelBooking(Learner learner) {
-        if (allLearners.remove(learner)) {
-            System.out.println(learner.getLearnerName() + "'s booking cancelled for " + day + " at " + time);
-            // Update status after cancellation
-            status = "available";
-        } else {
-            System.out.println(learner.getLearnerName() + " doesn't have a booking for this lesson.");
-        }
+    public String getDay() {
+        return day;
     }
 
-    public void getDetails() {
-        System.out.println("Lesson details for " + day + " at " + time + ":");
-        System.out.println("Grade Level: " + gradeLevel);
-        System.out.println("Coach: " + coach.getCoachName());
-        System.out.println("Capacity: " + capacity);
-        System.out.println("Learners: " + allLearners.size() + "/" + capacity);
-        System.out.println("Status: " + status);
+    public String getTimeSlot() {
+        return timeSlot;
     }
 
-    private boolean isBookingAllowed(Learner learner) {
-        // Check if the lesson has reached its maximum capacity
-        if (allLearners.size() >= capacity) {
-            return false;  // Lesson is already full
+    public int getCoachId() {
+        return coachId;
+    }
+
+    public Set<Integer> getLearnerIds() {
+        return new HashSet<>(learnerIds); // Protect the internal structure
+    }
+
+    // Business logic methods
+    public boolean addLearner(int learnerId) {
+        if (learnerIds.size() >= maxLearners) {
+            System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
+            return false;
         }
-        // Check if the learner's grade level is suitable for the lesson
-        int learnerGrade = learner.getCurrentGradeLevel();
-        if (learnerGrade < gradeLevel || learnerGrade > gradeLevel + 1) {
-            return false;  // Learner's grade level is not suitable
+        return learnerIds.add(learnerId);
+    }
+    public boolean removeLearner(int learnerId) {
+        if (learnerIds.contains(learnerId)) {
+            learnerIds.remove(learnerId);
+            return true;
         }
-        // Check for other criteria as needed
-        // If all criteria are met, booking is allowed
+        return false;
+    }
+
+    // New functionalities to manage lesson attendance and feedback
+    public boolean attendLesson(int learnerId, String review, int rating) {
+        // Check if the learner was booked for the lesson
+        if (!learnerIds.contains(learnerId)) {
+            System.out.println("Learner " + learnerId + " was not booked for lesson " + id);
+            return false;
+        }
+        // Remove learner from booked set to mark attendance
+        learnerIds.remove(learnerId);
+        // Save review and rating
+        addReview(learnerId, review);
+        addRating(learnerId, rating);
+
         return true;
-    }*/
-}
+    }
 
+    private void addReview(int learnerId, String review) {
+        reviews.put(learnerId, review);
+    }
+
+    private void addRating(int learnerId, int rating) {
+        if (rating >= 1 && rating <= 5) {
+            ratings.put(learnerId, rating);
+        } else {
+            throw new IllegalArgumentException("Rating must be between 1 and 5.");
+        }
+    }
+
+    public Map<Integer, String> getAllReviews() {
+        return new HashMap<>(reviews); // Protect the internal structure
+    }
+
+    public Map<Integer, Integer> getAllRatings() {
+        return new HashMap<>(ratings); // Protect the internal structure
+    }
+
+    // Calculate the average rating for this lesson
+    public double calculateAverageRating() {        // will remove it in future
+        if (ratings.isEmpty()) {
+            return 0.0;
+        }
+        return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
+    // Method to check if a learner is booked for this lesson
+    public boolean isLearnerBooked(int learnerId) {
+        return learnerIds.contains(learnerId);      //keeping it for future purpose if in case i need it
+    }
+}
