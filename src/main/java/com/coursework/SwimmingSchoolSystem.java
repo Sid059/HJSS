@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SwimmingSchoolSystem {
+    Scanner sc = new Scanner(System.in);
     private List<Learner> learners = new ArrayList<>(); //array list to store learners(junior learners)
     private List<Coach> coaches = new ArrayList<>(); //array list to store coaches
+    private List<SwimmingLesson> lessons = new ArrayList<>(); //array list to store lessons
     public SwimmingSchoolSystem(){
         initializeCoaches();
+        initializeLessons();
         initializePreregisteredLearners();
     }
     private void initializePreregisteredLearners(){
@@ -25,9 +28,101 @@ public class SwimmingSchoolSystem {
         learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",3));
     }
     private void initializeCoaches() {
-        coaches.add(new Coach("Donald",22056));
-        coaches.add(new Coach("Ralph",39728));
-        coaches.add(new Coach("Smith",77831));
+        coaches.add(new Coach("Donald",1));
+        coaches.add(new Coach("Ralph",2));
+        coaches.add(new Coach("Smith",3));
+        coaches.add(new Coach("Spencer",4));
+        coaches.add(new Coach("Mike",5));
+    }
+    private void initializeLessons() {
+        // Hardcoding lessons with the associated coachId
+        String[] weekdays = {"Monday", "Wednesday", "Friday"};
+        String[] weekend = {"Saturday"};
+        String[] weekdaysTimeSlots = {"4-5pm", "5-6pm", "6-7pm"};
+        String[] weekendTimeSlots = {"2-3pm", "3-4pm"};
+
+        // Loop for 4 weeks
+        for (int week = 1; week <= 4; week++) {
+            // Weekday lessons
+            for (String day : weekdays) {
+                for (String timeSlot : weekdaysTimeSlots) {
+                    for (int grade = 1; grade <= 5; grade++) {
+                        int coachId = grade; // Simplifying assumption: coach ID matches grade
+                        lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
+                    }
+                }
+            }
+            // Weekend lessons (Saturday)
+            for (String day : weekend) {
+                for (String timeSlot : weekendTimeSlots) {
+                    for (int grade = 1; grade <= 5; grade++) {
+                        int coachId = grade; // Simplifying assumption: coach ID matches grade
+                        lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
+                    }
+                }
+            }
+        }
+    }
+
+    // displays lessons according to day, coach , grade
+    public void runLessonDisplayInterface() {
+        System.out.println("-------------------Days & Timings---------------------"
+                            +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
+                            +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
+                            +"\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
+                            +"\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
+
+        System.out.println("Below is the list of the coaches registered for this program.\n");
+        showAllCoaches();
+
+        System.out.println("\nHow would you like to view the available lessons ?"
+                +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
+        String filterType = sc.nextLine().trim();
+
+        if (!filterType.equalsIgnoreCase("day") && !filterType.equalsIgnoreCase("grade") && !filterType.equalsIgnoreCase("coach")) {
+            System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
+            return;
+        }
+
+        System.out.println("Enter one value for " + filterType + " ,i.e Monday, Wednesday, Friday, Saturday :");
+        String filterValue = sc.nextLine().trim();
+
+        displayLessons(filterType, filterValue);
+    }
+    public void displayLessons(String filterType, String filterValue) {
+        System.out.println("Filtered Lessons:");
+        for (SwimmingLesson lesson : lessons) {
+            String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
+            boolean displayLesson = false;
+
+            switch (filterType.toLowerCase()) {
+                case "day":
+                    displayLesson = lesson.getDay().equalsIgnoreCase(filterValue);
+                    break;
+                case "grade":
+                    displayLesson = Integer.toString(lesson.getGrade()).equals(filterValue);
+                    break;
+                case "coach":
+                    displayLesson = coachName.equalsIgnoreCase(filterValue);
+                    break;
+                default:
+                    System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
+                    return;
+            }
+
+            if (displayLesson) {
+                System.out.println(lesson.getDetails() + ", Coach: " + coachName +
+                        ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
+            }
+        }
+    }
+    private Coach findCoachById(int coachId) {
+        for (Coach coach : coaches) {
+            if (coach.getId() == coachId) {
+                return coach;
+            }
+        }
+        return null; // Consider handling this case more gracefully in your implementation
     }
 
     //method to register a new learner
@@ -67,6 +162,11 @@ public class SwimmingSchoolSystem {
     public void showAllLearners(){
         for (Learner stud: learners){
             System.out.println(stud.toString());
+        }
+    }
+    public void showAllCoaches(){
+        for (Coach coach: coaches){
+            System.out.println(coach.toString());
         }
     }
 }

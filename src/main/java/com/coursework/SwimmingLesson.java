@@ -12,17 +12,19 @@ public class SwimmingLesson {
     private String day;
     private String timeSlot;
     private int coachId;
+    private int week;
     private Set<Integer> learnerIds;
     private final int maxLearners = 4;
     private Map<Integer, String> reviews; // Learner ID to review text
     private Map<Integer, Integer> ratings; // Learner ID to rating
 
-    public SwimmingLesson(int grade, String day, String timeSlot, int coachId) {
+    public SwimmingLesson(int grade, String day, String timeSlot, int coachId, int week) {
         this.id = nextId++;
         this.grade = grade;
         this.day = day;
         this.timeSlot = timeSlot;
         this.coachId = coachId;
+        this.week = week;
         this.learnerIds = new HashSet<>();
         this.reviews = new HashMap<>();
         this.ratings = new HashMap<>();
@@ -47,12 +49,18 @@ public class SwimmingLesson {
     public int getCoachId() {
         return coachId;
     }
+    public int getWeek(){
+        return week;
+    }
+    public int getMaxLearners(){
+        return maxLearners;
+    }
 
     public Set<Integer> getLearnerIds() {
         return new HashSet<>(learnerIds); // Protect the internal structure
     }
 
-    // Business logic methods
+    // This method manages the booking at the individual lesson level.
     public boolean addLearner(int learnerId) {
         if (learnerIds.size() >= maxLearners) {
             System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
@@ -80,7 +88,6 @@ public class SwimmingLesson {
         // Save review and rating
         addReview(learnerId, review);
         addRating(learnerId, rating);
-
         return true;
     }
 
@@ -115,5 +122,9 @@ public class SwimmingLesson {
     // Method to check if a learner is booked for this lesson
     public boolean isLearnerBooked(int learnerId) {
         return learnerIds.contains(learnerId);      //keeping it for future purpose if in case i need it
+    }
+    public String getDetails() {
+        // Construct and return a string representing the lesson's details
+        return String.format("Lesson ID: %d, Grade: %d, Day: %s, Time Slot: %s", id, grade, day, timeSlot);
     }
 }

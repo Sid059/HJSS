@@ -34,11 +34,11 @@ public class Coach {
     }
 
     // Assign a lesson to this coach
-    public void assignLesson(int lessonId) {
+    /*public void assignLesson(int lessonId) {
         if (!taughtLessonIds.contains(lessonId)) {
             taughtLessonIds.add(lessonId);
         }
-    }
+    }*/
 
     // Add a rating for this coach
     public void addRating(int rating) {     //wherever this function will be invoked don't forget to add a prompt which asks user to enter rating b/w 1 & 5
@@ -59,6 +59,9 @@ public class Coach {
             sum += rating;
         }
         return sum / ratings.size();
+    }
+    public String toString(){
+        return  "Name : " +getName()+ "\nId : " +getId();
     }
 }
 
