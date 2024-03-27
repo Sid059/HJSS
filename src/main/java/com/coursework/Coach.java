@@ -61,7 +61,7 @@ public class Coach {
         return sum / ratings.size();
     }
     public String toString(){
-        return  "Name : " +getName()+ "\nId : " +getId();
+        return  "Name: " +getName()+ ", Id: " +getId();
     }
 }
 

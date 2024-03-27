@@ -111,8 +111,7 @@ public class SwimmingSchoolSystem {
             }
 
             if (displayLesson) {
-                System.out.println(lesson.getDetails() + ", Coach: " + coachName +
-                        ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
+                System.out.println(lesson.getDetails() + ", Coach: " + coachName + ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
             }
         }
     }
@@ -128,7 +127,7 @@ public class SwimmingSchoolSystem {
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{   //handles if any exception occurs related to age and grade level
         Scanner sc = new Scanner(System.in);
-        System.out.println("Registration in progress...\n");
+        System.out.println("\nRegistration in progress...");
         System.out.println("Enter your full name : ");
         String name = sc.nextLine();
         System.out.println("Enter your gender (M/F): ");
@@ -159,32 +158,18 @@ public class SwimmingSchoolSystem {
         System.out.println("#-------------------NEWLY REGISTERED LEARNER DETAILS-------------------#\n"+newRegLearner.toString());
 
     }
-    public void bookLesson() {
+    public void bookLesson() {      //incomplete functionality need to complete the updating vacancy functionality
         System.out.println("\nLesson Booking in progress...");
         // Display all learners for selection
         System.out.println("#---------------Available Learners------------------#");
         showAllLearners(); //displays all registered learners
 
-        System.out.print("Enter learner ID to book a lesson for : ");
+        System.out.print("\nEnter learner ID to book a lesson for : ");
         int learnerId = sc.nextInt();
         //shows available lessons according to learners grade level
         displayAvailableLessonsForLearner(learnerId);
-        /*
-        if (selectedLearner == null) {
-            System.out.println("\nLearner not found. It may be because learner has not yet been registered. Please try again.");
-            return;
-        }
-        lessons.stream()
-                .filter(lesson -> !lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade()))
-                .forEach(lesson -> System.out.println("Lesson ID: " + lesson.getId() +
-                        ", Grade: " + lesson.getGrade() +
-                        ", Day: " + lesson.getDay() +
-                        ", Time: " + lesson.getTimeSlot() +
-                        ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size())));
-                        Learner selectedLearner = findLearnerById(learnerId);
-        */
 
-        System.out.print("Select lesson ID to book : ");
+        System.out.print("\nSelect lesson ID to book : ");
         int lessonId = sc.nextInt();
 
         if (bookLessonForLearner(learnerId, lessonId)) {
@@ -238,7 +223,7 @@ public class SwimmingSchoolSystem {
     //displays all registered learners
     public void showAllLearners(){
         for (Learner stud: learners){
-            System.out.println(stud.toString());
+            System.out.println("Name: "+stud.getName()+", ID: "+stud.getId()+", Grade Level: "+stud.getGradeLevel());
         }
     }
     public void showAllCoaches(){
