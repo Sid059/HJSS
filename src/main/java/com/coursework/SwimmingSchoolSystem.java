@@ -84,7 +84,7 @@ public class SwimmingSchoolSystem {
             return;
         }
 
-        System.out.println("Enter one value for " + filterType + " ,i.e Monday, Wednesday, Friday, Saturday :");
+        System.out.println("Enter one value for " + filterType + " : ");
         String filterValue = sc.nextLine().trim();
 
         displayLessons(filterType, filterValue);
@@ -128,6 +128,7 @@ public class SwimmingSchoolSystem {
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{   //handles if any exception occurs related to age and grade level
         Scanner sc = new Scanner(System.in);
+        System.out.println("Registration in progress...\n");
         System.out.println("Enter your full name : ");
         String name = sc.nextLine();
         System.out.println("Enter your gender (M/F): ");
@@ -158,6 +159,82 @@ public class SwimmingSchoolSystem {
         System.out.println("#-------------------NEWLY REGISTERED LEARNER DETAILS-------------------#\n"+newRegLearner.toString());
 
     }
+    public void bookLesson() {
+        System.out.println("\nLesson Booking in progress...");
+        // Display all learners for selection
+        System.out.println("#---------------Available Learners------------------#");
+        showAllLearners(); //displays all registered learners
+
+        System.out.print("Enter learner ID to book a lesson for : ");
+        int learnerId = sc.nextInt();
+        //shows available lessons according to learners grade level
+        displayAvailableLessonsForLearner(learnerId);
+        /*
+        if (selectedLearner == null) {
+            System.out.println("\nLearner not found. It may be because learner has not yet been registered. Please try again.");
+            return;
+        }
+        lessons.stream()
+                .filter(lesson -> !lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade()))
+                .forEach(lesson -> System.out.println("Lesson ID: " + lesson.getId() +
+                        ", Grade: " + lesson.getGrade() +
+                        ", Day: " + lesson.getDay() +
+                        ", Time: " + lesson.getTimeSlot() +
+                        ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size())));
+                        Learner selectedLearner = findLearnerById(learnerId);
+        */
+
+        System.out.print("Select lesson ID to book : ");
+        int lessonId = sc.nextInt();
+
+        if (bookLessonForLearner(learnerId, lessonId)) {
+            System.out.println("Lesson booked successfully.");
+        } else {
+            System.out.println("Oops! Failed to book lesson. It might be full or not match the learner's grade.");
+        }
+    }
+
+    private boolean bookLessonForLearner(int learnerId, int lessonId) {
+        for (SwimmingLesson lesson : lessons) {
+            if (lesson.getId() == lessonId && !lesson.isFull() && findLearnerById(learnerId).canBookLesson(lesson.getGrade())) {
+                lesson.getLearnerIds().add(learnerId); // This presumes getLearnerIds() gives direct access to modify the set
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Learner findLearnerById(int learnerId) {
+        for (Learner learner : learners) {
+            if (learner.getId() == learnerId) {
+                return learner;
+            }
+        }
+        return null; // Learner not found
+    }
+    public void displayAvailableLessonsForLearner(int learnerId) {
+        Learner selectedLearner = findLearnerById(learnerId);
+        if (selectedLearner == null) {
+            System.out.println("\nLearner not found. It may be because learner has not yet been registered. Please try again.");
+            return;
+        }
+
+        System.out.println("\nAvailable lessons:");
+        for (SwimmingLesson lesson : lessons) {
+            // Check if the lesson is not full and if the learner can book the lesson based on its grade
+            if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
+                // Calculate the number of vacancies
+                int vacancies = lesson.getMaxLearners() - lesson.getLearnerIds().size();
+                // Print the lesson details
+                System.out.println("Lesson ID: " + lesson.getId() +
+                        ", Grade: " + lesson.getGrade() +
+                        ", Day: " + lesson.getDay() +
+                        ", Time: " + lesson.getTimeSlot() +
+                        ", Vacancies: " + vacancies);
+            }
+        }
+    }
+
     //displays all registered learners
     public void showAllLearners(){
         for (Learner stud: learners){

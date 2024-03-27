@@ -20,6 +20,7 @@ public class UImain {
                 case 1: //book a swimming lesson
                     //this function should not run unless and until the user is registered.
                     sss.runLessonDisplayInterface();    //for test
+                    sss.bookLesson();   //for test
                     break;
                 case 2: //change/cancel a booking
                     break;

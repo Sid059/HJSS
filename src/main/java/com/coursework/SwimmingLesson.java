@@ -59,6 +59,10 @@ public class SwimmingLesson {
     public Set<Integer> getLearnerIds() {
         return new HashSet<>(learnerIds); // Protect the internal structure
     }
+    public boolean isFull() {
+        return learnerIds.size() >= maxLearners;
+    }
+
 
     // This method manages the booking at the individual lesson level.
     public boolean addLearner(int learnerId) {
