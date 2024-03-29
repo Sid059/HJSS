@@ -86,7 +86,7 @@ public class SwimmingSchoolSystem {
 
         System.out.println("Enter one value for " + filterType + " : ");
         String filterValue = sc.nextLine().trim();
-
+        //displays lessons
         displayLessons(filterType, filterValue);
     }
     public void displayLessons(String filterType, String filterValue) {
@@ -109,7 +109,6 @@ public class SwimmingSchoolSystem {
                     System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
                     return;
             }
-
             if (displayLesson) {
                 System.out.println(lesson.getDetails() + ", Coach: " + coachName + ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
             }
@@ -158,7 +157,7 @@ public class SwimmingSchoolSystem {
         System.out.println("#-------------------NEWLY REGISTERED LEARNER DETAILS-------------------#\n"+newRegLearner.toString());
 
     }
-    public void bookLesson() {      //incomplete functionality need to complete the updating vacancy functionality
+    public void bookLesson() {      //completed the updating vacancy functionality(done)
         System.out.println("\nLesson Booking in progress...");
         // Display all learners for selection
         System.out.println("#---------------Available Learners------------------#");
@@ -166,29 +165,40 @@ public class SwimmingSchoolSystem {
 
         System.out.print("\nEnter learner ID to book a lesson for : ");
         int learnerId = sc.nextInt();
-        //shows available lessons according to learners grade level
-        displayAvailableLessonsForLearner(learnerId);
+        //shows available lessons according to learners grade level also checks if the learner is registered or not before booking and showing available lessons
+        boolean success = displayAvailableLessonsForLearner(learnerId);
+        if (success) {
+            System.out.print("\nSelect lesson ID to book : ");
+            int lessonId = sc.nextInt();
 
-        System.out.print("\nSelect lesson ID to book : ");
-        int lessonId = sc.nextInt();
-
-        if (bookLessonForLearner(learnerId, lessonId)) {
-            System.out.println("Lesson booked successfully.");
-        } else {
-            System.out.println("Oops! Failed to book lesson. It might be full or not match the learner's grade.");
+            if (bookLessonForLearner(learnerId, lessonId)) {
+                System.out.println("Lesson booked successfully.");
+            }
+            else {
+                if (!lessons.contains(lessonId)) {
+                    System.out.println("Error! You have entered wrong lesson Id.");
+                }
+                else {
+                    System.out.println("Oops! Failed to book lesson. It might be because you already have an existing booking for this lesson or because it doesn't match lesson's grade level.");
+                }
+            }
         }
     }
 
     private boolean bookLessonForLearner(int learnerId, int lessonId) {
         for (SwimmingLesson lesson : lessons) {
-            if (lesson.getId() == lessonId && !lesson.isFull() && findLearnerById(learnerId).canBookLesson(lesson.getGrade())) {
-                lesson.getLearnerIds().add(learnerId); // This presumes getLearnerIds() gives direct access to modify the set
-                return true;
+            if (lesson.getId() == lessonId) {
+                Learner learner = findLearnerById(learnerId);
+                if (learner != null && !lesson.isFull() && learner.canBookLesson(lesson.getGrade())) {
+                    // checks the capacity and books lessons accordingly
+                    if (lesson.addLearner(learnerId)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
-
     private Learner findLearnerById(int learnerId) {
         for (Learner learner : learners) {
             if (learner.getId() == learnerId) {
@@ -197,14 +207,14 @@ public class SwimmingSchoolSystem {
         }
         return null; // Learner not found
     }
-    public void displayAvailableLessonsForLearner(int learnerId) {
+    public boolean displayAvailableLessonsForLearner(int learnerId) {
         Learner selectedLearner = findLearnerById(learnerId);
         if (selectedLearner == null) {
-            System.out.println("\nLearner not found. It may be because learner has not yet been registered. Please try again.");
-            return;
+            System.out.println("\nOops! Learner not found. You need to register as a learner first to a book lesson.");
+            return false;
         }
 
-        System.out.println("\nAvailable lessons:");
+        System.out.println("\n#---------------Available lessons---------------#");
         for (SwimmingLesson lesson : lessons) {
             // Check if the lesson is not full and if the learner can book the lesson based on its grade
             if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
@@ -218,6 +228,7 @@ public class SwimmingSchoolSystem {
                         ", Vacancies: " + vacancies);
             }
         }
+        return true;
     }
 
     //displays all registered learners

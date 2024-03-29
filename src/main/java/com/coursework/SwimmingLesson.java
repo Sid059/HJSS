@@ -66,10 +66,11 @@ public class SwimmingLesson {
 
     // This method manages the booking at the individual lesson level.
     public boolean addLearner(int learnerId) {
-        if (learnerIds.size() >= maxLearners) {
+        if (isFull()) {
             System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
             return false;
         }
+        //learnerIds is a set so there won't be any duplicate bookings for a particular lesson by a particular learner
         return learnerIds.add(learnerId);
     }
     public boolean removeLearner(int learnerId) {
