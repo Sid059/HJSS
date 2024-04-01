@@ -60,14 +60,6 @@ public class Learner {
         this.gradeLevel = newGradeLevel;
         System.out.println(name + " has now advanced to grade level " + gradeLevel+".");
     }
-    /* Updates the grade level after attending a higher-grade lesson
-    public void attendLesson(int lessonGrade) {
-        if (lessonGrade == this.gradeLevel + 1) {
-            this.gradeLevel = lessonGrade;
-        }
-        // Assuming attendance implies removing from booked lessons if needed
-        // bookedLessonIds.remove(lessonId); // Uncomment if attending removes the lesson from booked
-    }*/
     public Set<Integer> getBookedLessonIds() {
         return new HashSet<>(bookedLessonIds); // Return a copy to protect the internal set
     }

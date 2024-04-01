@@ -1,5 +1,6 @@
 package com.coursework;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 public class UImain {
@@ -18,8 +19,13 @@ public class UImain {
             int choice = sc.nextInt();
             switch (choice){
                 case 1: //book a swimming lesson
-                    sss.runLessonDisplayInterface();
-                    sss.bookLesson();    //still need to hardcode and book lessons for one month.
+                    try {
+                        sss.runLessonDisplayInterface();
+                        sss.bookLesson();    //still need to hardcode and book lessons for one month.
+                    }
+                    catch(InputMismatchException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 2: //change/cancel a booking
                     break;

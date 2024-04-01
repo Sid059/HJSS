@@ -1,6 +1,7 @@
 package com.coursework;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -64,65 +65,6 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    // displays lessons according to day, coach , grade
-    public void runLessonDisplayInterface() {
-        System.out.println("-------------------Days & Timings---------------------"
-                            +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
-                            +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
-                            +"\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
-                            +"\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
-
-        System.out.println("Below is the list of the coaches registered for this program.\n");
-        showAllCoaches();
-
-        System.out.println("\nHow would you like to view the available lessons ?"
-                +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
-        String filterType = sc.nextLine().trim();
-
-        if (!filterType.equalsIgnoreCase("day") && !filterType.equalsIgnoreCase("grade") && !filterType.equalsIgnoreCase("coach")) {
-            System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
-            return;
-        }
-
-        System.out.println("Enter one value for " + filterType + " : ");
-        String filterValue = sc.nextLine().trim();
-        //displays lessons
-        displayLessons(filterType, filterValue);
-    }
-    public void displayLessons(String filterType, String filterValue) {
-        System.out.println("Filtered Lessons:");
-        for (SwimmingLesson lesson : lessons) {
-            String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
-            boolean displayLesson = false;
-
-            switch (filterType.toLowerCase()) {
-                case "day":
-                    displayLesson = lesson.getDay().equalsIgnoreCase(filterValue);
-                    break;
-                case "grade":
-                    displayLesson = Integer.toString(lesson.getGrade()).equals(filterValue);
-                    break;
-                case "coach":
-                    displayLesson = coachName.equalsIgnoreCase(filterValue);
-                    break;
-                default:
-                    System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
-                    return;
-            }
-            if (displayLesson) {
-                System.out.println(lesson.getDetails() + ", Coach: " + coachName + ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
-            }
-        }
-    }
-    private Coach findCoachById(int coachId) {
-        for (Coach coach : coaches) {
-            if (coach.getId() == coachId) {
-                return coach;
-            }
-        }
-        return null; // Consider handling this case more gracefully in your implementation
-    }
-
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{   //handles if any exception occurs related to age and grade level
         Scanner sc = new Scanner(System.in);
@@ -157,6 +99,85 @@ public class SwimmingSchoolSystem {
         System.out.println("#-------------------NEWLY REGISTERED LEARNER DETAILS-------------------#\n"+newRegLearner.toString());
 
     }
+
+    // displays lessons according to day, coach , grade
+    public void runLessonDisplayInterface() throws InputMismatchException {
+        System.out.println("-------------------Days & Timings---------------------"
+                +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
+                +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
+                +"\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
+                +"\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
+
+        System.out.println("Below is the list of the coaches registered for this program.\n");
+        //displays the list of all registered coaches with their name and Ids
+        showAllCoaches();
+
+        System.out.println("\nHow would you like to view the available lessons ?"
+                          +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
+        String filterType = sc.nextLine().trim();
+
+        if (!filterType.equalsIgnoreCase("day") && !filterType.equalsIgnoreCase("grade") && !filterType.equalsIgnoreCase("coach")) {
+            throw new InputMismatchException("Error! Invalid filter type. Please type 'day', 'grade', or 'coach' to view lessons accordingly.");
+        }
+        System.out.println("\nYou have to enter one value:-"
+                +"\nFor 'day': Please enter name of days ,i.e, 'Monday', 'Wednesday', 'Friday', or 'Saturday'."
+                +"\nFor 'grade': Please enter grade levels ,i.e, '0', '1', '2', '3', '4', or '5'."
+                +"\nFor 'coach': Please enter coach name ,i.e, 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
+        System.out.println("\nEnter one value for " + filterType + " : ");
+        String filterValue = sc.nextLine().trim();
+
+        if(!checkFilterValue(filterValue)) {        //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
+            throw new InputMismatchException("Error! Invalid value entered.");
+        }
+
+        //displays lessons according to the filter
+        displayLessons(filterType, filterValue);
+    }
+    public boolean checkFilterValue(String value){      //checks the filterValue that's been taken as an input
+        String [] str = {"Monday","Wednesday","Friday","Saturday","0","1","2","3","4","5","Donald","Ralph","Smith","Spencer","Mike"};
+        for(String arr : str){
+            if(value.equalsIgnoreCase(arr)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void displayLessons(String filterType, String filterValue) {
+        System.out.println("Filtered Lessons:");
+        for (SwimmingLesson lesson : lessons) {
+            String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
+            boolean displayLesson = false;
+
+            switch (filterType.toLowerCase()) {
+                case "day":
+                    displayLesson = lesson.getDay().equalsIgnoreCase(filterValue);
+                    break;
+                case "grade":
+                    displayLesson = Integer.toString(lesson.getGrade()).equals(filterValue);
+                    break;
+                case "coach":
+                    displayLesson = coachName.equalsIgnoreCase(filterValue);
+                    break;
+                default:
+                    System.out.println("Invalid filter type. Please choose 'day', 'grade', or 'coach'.");
+                    return;
+            }
+            if (displayLesson) {
+                System.out.println(lesson.getDetails() + ", Coach: " + coachName + ", Vacancies: " + (lesson.getMaxLearners() - lesson.getLearnerIds().size()));
+            }
+        }
+    }
+    private Coach findCoachById(int coachId) {      //returns Coach object according to the coachID
+        for (Coach coach : coaches) {
+            if (coach.getId() == coachId) {
+                return coach;
+            }
+        }
+        return null;
+    }
+
+    //books lesson for learner
     public void bookLesson() {      //completed the updating vacancy functionality(done)
         System.out.println("\nLesson Booking in progress...");
         // Display all learners for selection
@@ -184,8 +205,7 @@ public class SwimmingSchoolSystem {
             }
         }
     }
-
-    private boolean bookLessonForLearner(int learnerId, int lessonId) {
+    private boolean bookLessonForLearner(int learnerId, int lessonId) {     //returns true if lesson has been booked
         for (SwimmingLesson lesson : lessons) {
             if (lesson.getId() == lessonId) {
                 Learner learner = findLearnerById(learnerId);
@@ -199,7 +219,7 @@ public class SwimmingSchoolSystem {
         }
         return false;
     }
-    private Learner findLearnerById(int learnerId) {
+    private Learner findLearnerById(int learnerId) {        //returns Learner object according to the LearnerID
         for (Learner learner : learners) {
             if (learner.getId() == learnerId) {
                 return learner;
@@ -230,8 +250,9 @@ public class SwimmingSchoolSystem {
         }
         return true;
     }
-    public void attendLessonAndProvideFeedback() {  //need to complete this
-        System.out.println("Attending a lesson and providing feedback...");
+    //helps attend lessons and provide reviews and ratings accordingly
+    public void attendLessonAndProvideFeedback() {  //#########need to find a way of storing the list of bookings of learner for a month
+        System.out.println("\nAttending a lesson and providing feedback...");
         System.out.println("Enter learner ID: ");
         int learnerId = sc.nextInt();
         System.out.println("Enter ID of the lesson you want to attend: ");
@@ -246,23 +267,23 @@ public class SwimmingSchoolSystem {
         Learner learner = findLearnerById(learnerId);
         try {
             if (lesson == null) {
-                throw new IllegalArgumentException("Lesson not found.");
+                throw new IllegalArgumentException("Error! Lesson not found.");
             }
             if (!lesson.isLearnerEnrolled(learnerId)) {
-                throw new IllegalArgumentException("Learner not enrolled in this lesson.");
+                throw new IllegalArgumentException("Error! Learner not enrolled in this lesson.");
             }
-            System.out.println("Congratulations on attending Grade "+lesson.getGrade()+" lesson successfully.");
+            System.out.println("Congratulations on completing \'Grade "+lesson.getGrade()+"\' lesson successfully.");
             //Checks if the attended lesson's grade is exactly one level higher than the learner's current grade, if true updates learner's grade to a level higher
             if (lesson.getGrade() == learner.getGradeLevel() + 1) {
                 learner.updateGradeLevel(lesson.getGrade());
             }
-            System.out.println("\nGive your review about the lesson: ");
+            System.out.println("\nPlease provide a review about the lesson in a few words: ");
             String review = sc.nextLine();
-            System.out.println("On a scale of (1-5) how would you rate this lesson: ");
+            System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
             int rating = sc.nextInt();
             //checks if the value of rating is withing range
             if (rating < 1 || rating > 5) {
-                throw new IllegalArgumentException("Rating must be between 1 and 5.");
+                throw new IllegalArgumentException("Error! Rating must be between 1 and 5.");
             }
             //records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
             lesson.recordFeedback(learnerId, review, rating);
