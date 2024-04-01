@@ -230,6 +230,56 @@ public class SwimmingSchoolSystem {
         }
         return true;
     }
+    public void attendLessonAndProvideFeedback() {  //need to complete this
+        System.out.println("Attending a lesson and providing feedback...");
+        System.out.println("Enter learner ID: ");
+        int learnerId = sc.nextInt();
+        System.out.println("Enter lesson ID you want to attend: ");
+        int lessonId = sc.nextInt();
+        /*System.out.println("Enter your review: ");
+        String review = sc.next();
+        System.out.println("Enter your rating (1-5): ");
+        int rating = sc.nextInt();
+        */
+        //
+        //attendLesson(learnerId, lessonId, review, rating);
+        attendLesson(learnerId, lessonId);
+    }
+    //public void attendLesson(int learnerId, int lessonId, String review, int rating) throws IllegalArgumentException {
+    public void attendLesson(int learnerId, int lessonId) throws IllegalArgumentException {     //need to implement the functionality where after attending a lesson capacity of the lesson turns back to normal
+        SwimmingLesson lesson = findLessonById(lessonId);
+        try {
+            if (lesson == null) {
+                throw new IllegalArgumentException("Lesson not found.");
+            }
+            if (!lesson.isLearnerEnrolled(learnerId)) {
+                throw new IllegalArgumentException("Learner not enrolled in this lesson.");
+            }
+            System.out.println("Lesson attended successfully.");
+            System.out.println("\nGive your review about the lesson: ");
+            String review = sc.nextLine();
+            System.out.println("On a scale of (1-5) how would you rate this lesson: ");
+            int rating = sc.nextInt();
+            //checks if the value of rating is withing range
+            if (rating < 1 || rating > 5) {
+                throw new IllegalArgumentException("Rating must be between 1 and 5.");
+            }
+            lesson.recordFeedback(learnerId, review, rating);
+            System.out.println("Feedback recorded successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    // Method to find a lesson by its ID
+    private SwimmingLesson findLessonById(int lessonId) {
+        for (SwimmingLesson lesson : lessons) {
+            if (lesson.getId() == lessonId) {
+                return lesson;
+            }
+        }
+        return null; // Return null if no lesson matches the given ID
+    }
+
 
     //displays all registered learners
     public void showAllLearners(){

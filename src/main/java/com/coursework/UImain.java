@@ -18,12 +18,18 @@ public class UImain {
             int choice = sc.nextInt();
             switch (choice){
                 case 1: //book a swimming lesson
-                    sss.runLessonDisplayInterface();    //for test
-                    sss.bookLesson();
+                    sss.runLessonDisplayInterface();
+                    sss.bookLesson();    //still need to hardcode and book lessons for one month.
                     break;
                 case 2: //change/cancel a booking
                     break;
                 case 3: //attend a swimming lesson
+                    try {
+                        sss.attendLessonAndProvideFeedback();
+                    }
+                    catch (Exception e){
+                        System.out.println("An error occurred: " + e.getMessage());
+                    }
                     break;
                 case 4: //monthly learner report
                     break;

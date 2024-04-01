@@ -12,9 +12,9 @@ public class SwimmingLesson {
     private String day;
     private String timeSlot;
     private int coachId;
-    private int week;
-    private Set<Integer> learnerIds;
-    private final int maxLearners = 4;
+    private int week;       //need to check into this variable, whether to use ot or not
+    private Set<Integer> learnerIds;    // stores IDs of the learners that are enrolled in a particular lesson. this will be created for each instance of lesson.
+    private final int maxLearners = 4;  // max capacity of learners that each lesson can hold
     private Map<Integer, String> reviews; // Learner ID to review text
     private Map<Integer, Integer> ratings; // Learner ID to rating
 
@@ -34,9 +34,7 @@ public class SwimmingLesson {
         return id;
     }
 
-    public int getGrade() {
-        return grade;
-    }
+    public int getGrade() { return grade; }
 
     public String getDay() {
         return day;
@@ -49,22 +47,17 @@ public class SwimmingLesson {
     public int getCoachId() {
         return coachId;
     }
-    public int getWeek(){
-        return week;
-    }
-    public int getMaxLearners(){
-        return maxLearners;
-    }
+    public int getWeek(){ return week; }
+    public int getMaxLearners(){ return maxLearners; }
 
-    public Set<Integer> getLearnerIds() {
+    public Set<Integer> getLearnerIds() {   //need to check where it's being used####################################
         return new HashSet<>(learnerIds); // Protect the internal structure
     }
     public boolean isFull() {
         return learnerIds.size() >= maxLearners;
     }
 
-
-    // This method manages the booking at the individual lesson level.
+    //manages the booking at the individual lesson level.
     public boolean addLearner(int learnerId) {
         if (isFull()) {
             System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
@@ -81,31 +74,15 @@ public class SwimmingLesson {
         return false;
     }
 
-    // New functionalities to manage lesson attendance and feedback
-    public boolean attendLesson(int learnerId, String review, int rating) {
-        // Check if the learner was booked for the lesson
-        if (!learnerIds.contains(learnerId)) {
-            System.out.println("Learner " + learnerId + " was not booked for lesson " + id);
-            return false;
-        }
-        // Remove learner from booked set to mark attendance
-        learnerIds.remove(learnerId);
-        // Save review and rating
-        addReview(learnerId, review);
-        addRating(learnerId, rating);
-        return true;
-    }
-
-    private void addReview(int learnerId, String review) {
+    // records feedback and rating
+    public void recordFeedback(int learnerId, String review, int rating) {
         reviews.put(learnerId, review);
+        ratings.put(learnerId, rating);
     }
 
-    private void addRating(int learnerId, int rating) {
-        if (rating >= 1 && rating <= 5) {
-            ratings.put(learnerId, rating);
-        } else {
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
-        }
+    //checks if the learnerId passed is enrolled for the particular lesson or not
+    public boolean isLearnerEnrolled(int learnerId) {
+        return learnerIds.contains(learnerId);
     }
 
     public Map<Integer, String> getAllReviews() {
