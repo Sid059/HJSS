@@ -66,7 +66,7 @@ public class SwimmingLesson {
         //learnerIds is a set so there won't be any duplicate bookings for a particular lesson by a particular learner
         return learnerIds.add(learnerId);
     }
-    public boolean removeLearner(int learnerId) {
+    public boolean removeLearner(int learnerId) {       //for now, it's getting invoked after attending a lesson
         if (learnerIds.contains(learnerId)) {
             learnerIds.remove(learnerId);
             return true;

@@ -216,11 +216,11 @@ public class SwimmingSchoolSystem {
 
         System.out.println("\n#---------------Available lessons---------------#");
         for (SwimmingLesson lesson : lessons) {
-            // Check if the lesson is not full and if the learner can book the lesson based on its grade
+            // Checks if the lesson is not full and if the learner can book the lesson based on its grade
             if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
-                // Calculate the number of vacancies
+                // Calculates the number of vacancies
                 int vacancies = lesson.getMaxLearners() - lesson.getLearnerIds().size();
-                // Print the lesson details
+                // Prints the lesson details
                 System.out.println("Lesson ID: " + lesson.getId() +
                         ", Grade: " + lesson.getGrade() +
                         ", Day: " + lesson.getDay() +
@@ -234,20 +234,16 @@ public class SwimmingSchoolSystem {
         System.out.println("Attending a lesson and providing feedback...");
         System.out.println("Enter learner ID: ");
         int learnerId = sc.nextInt();
-        System.out.println("Enter lesson ID you want to attend: ");
+        System.out.println("Enter ID of the lesson you want to attend: ");
         int lessonId = sc.nextInt();
-        /*System.out.println("Enter your review: ");
-        String review = sc.next();
-        System.out.println("Enter your rating (1-5): ");
-        int rating = sc.nextInt();
-        */
-        //
-        //attendLesson(learnerId, lessonId, review, rating);
+        // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the review is correctly waited for and captured.
+        sc.nextLine();
+        //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
         attendLesson(learnerId, lessonId);
     }
-    //public void attendLesson(int learnerId, int lessonId, String review, int rating) throws IllegalArgumentException {
     public void attendLesson(int learnerId, int lessonId) throws IllegalArgumentException {     //need to implement the functionality where after attending a lesson capacity of the lesson turns back to normal
         SwimmingLesson lesson = findLessonById(lessonId);
+        Learner learner = findLearnerById(learnerId);
         try {
             if (lesson == null) {
                 throw new IllegalArgumentException("Lesson not found.");
@@ -255,7 +251,11 @@ public class SwimmingSchoolSystem {
             if (!lesson.isLearnerEnrolled(learnerId)) {
                 throw new IllegalArgumentException("Learner not enrolled in this lesson.");
             }
-            System.out.println("Lesson attended successfully.");
+            System.out.println("Congratulations on attending Grade "+lesson.getGrade()+" lesson successfully.");
+            //Checks if the attended lesson's grade is exactly one level higher than the learner's current grade, if true updates learner's grade to a level higher
+            if (lesson.getGrade() == learner.getGradeLevel() + 1) {
+                learner.updateGradeLevel(lesson.getGrade());
+            }
             System.out.println("\nGive your review about the lesson: ");
             String review = sc.nextLine();
             System.out.println("On a scale of (1-5) how would you rate this lesson: ");
@@ -264,12 +264,18 @@ public class SwimmingSchoolSystem {
             if (rating < 1 || rating > 5) {
                 throw new IllegalArgumentException("Rating must be between 1 and 5.");
             }
+            //records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
             lesson.recordFeedback(learnerId, review, rating);
-            System.out.println("Feedback recorded successfully.");
-        } catch (IllegalArgumentException e) {
+
+            if(lesson.removeLearner(learnerId)){    //can use this function to cancel booking as well############################
+                System.out.println("Feedback recorded successfully.");
+            }
+        }
+        catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
+
     // Method to find a lesson by its ID
     private SwimmingLesson findLessonById(int lessonId) {
         for (SwimmingLesson lesson : lessons) {
@@ -279,7 +285,6 @@ public class SwimmingSchoolSystem {
         }
         return null; // Return null if no lesson matches the given ID
     }
-
 
     //displays all registered learners
     public void showAllLearners(){

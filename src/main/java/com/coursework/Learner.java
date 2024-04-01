@@ -35,9 +35,7 @@ public class Learner {
     public String getEmergencyContact() {
         return emergencyContact;
     }
-    public int getGradeLevel() {
-        return gradeLevel;
-    }
+    public int getGradeLevel() { return gradeLevel; }
     public int getId() {
         return id;
     }
@@ -57,14 +55,19 @@ public class Learner {
         return this.gradeLevel == lessonGrade || this.gradeLevel + 1 == lessonGrade;
     }
 
-    // Updates the grade level after attending a higher-grade lesson
+    // Method to update grade level
+    public void updateGradeLevel(int newGradeLevel) {
+        this.gradeLevel = newGradeLevel;
+        System.out.println(name + " has now advanced to grade level " + gradeLevel+".");
+    }
+    /* Updates the grade level after attending a higher-grade lesson
     public void attendLesson(int lessonGrade) {
         if (lessonGrade == this.gradeLevel + 1) {
             this.gradeLevel = lessonGrade;
         }
         // Assuming attendance implies removing from booked lessons if needed
         // bookedLessonIds.remove(lessonId); // Uncomment if attending removes the lesson from booked
-    }
+    }*/
     public Set<Integer> getBookedLessonIds() {
         return new HashSet<>(bookedLessonIds); // Return a copy to protect the internal set
     }
