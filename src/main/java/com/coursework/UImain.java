@@ -27,8 +27,16 @@ public class UImain {
                         System.out.println(e.getMessage());
                     }
                     break;
+
                 case 2: //change/cancel a booking
+                    try {
+                        sss.changeOrCancelBooking();
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
+
                 case 3: //attend a swimming lesson
                     try {
                         sss.attendLessonAndProvideFeedback();
@@ -37,6 +45,7 @@ public class UImain {
                         System.out.println("An error occurred: " + e.getMessage());
                     }
                     break;
+
                 case 4: //monthly learner report
                     break;
                 case 5: //monthly coach report

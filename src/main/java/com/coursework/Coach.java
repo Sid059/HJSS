@@ -20,18 +20,16 @@ public class Coach {
     public int getId() {
         return id;
     }
-
     public String getName() {
         return name;
     }
-
     public List<Integer> getTaughtLessonIds() {
         return new ArrayList<>(taughtLessonIds); // Return a copy to protect the internal list
     }
-
     public List<Integer> getRatings() {
         return new ArrayList<>(ratings); // Returns a copy of the ratings for each coach, this is to protect the internal list
     }
+
     public void printRatings() {        //can be used to see all the ratings that the coach received
         List<Integer> ratings = getRatings();
         System.out.println("Ratings:");
@@ -57,7 +55,7 @@ public class Coach {
     }
 
     // Calculate the average rating of this coach
-    public double calculateAverageRating() {
+    public double calculateAverageRating() {        //haven't used it yet, but it's there in the requirements section
         if (ratings.isEmpty()) {
             return 0.0; // Return 0 if there are no ratings
         }

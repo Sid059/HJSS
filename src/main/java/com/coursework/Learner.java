@@ -10,7 +10,7 @@ public class Learner {
     private int age;
     private String emergencyContact;
     private int gradeLevel;
-    private Set<Integer> bookedLessonIds; // Stores IDs of booked lessons to prevent duplicates
+    private Set<Integer> bookedLessonIds; // Stores IDs of booked lessons for each learner
 
     public Learner(String name, char gender, int age, String emergencyContact, int gradeLevel) {
         this.id = (int) (Math.random() * 9000) + 1000;
@@ -40,13 +40,13 @@ public class Learner {
         return id;
     }
 
-    // Booking a lesson. If the lesson ID is already present in the set (indicating the lesson has already been booked by this learner), the add method returns false, and the lesson is not added again, preventing duplicate bookings of the same lesson by a single learner.
-    public boolean bookLesson(int lessonId) {
-        return bookedLessonIds.add(lessonId);   // adds the specified element to the Set if it is not already present and returns a boolean indicating whether the element was added
+    // adds the lessonId's of the lesson booked by the learner in a separate list ,i.e, bookedLessonIds
+    public boolean keepRecordOfBookedLessons(int lessonId) {
+        return bookedLessonIds.add(lessonId);   // adds the specified element to the Set if it is not already present, and returns a boolean indicating whether the element was added
     }
 
-    // Canceling a booking. If the set contains the lessonId, it is removed, indicating that the booking for that lesson has been successfully canceled.
-    public boolean cancelLesson(int lessonId) {
+    // removes the lessonId of from the separate list that was being maintained to keep record of all the bookings for each learner
+    public boolean removeBookedLesson(int lessonId) {
         return bookedLessonIds.remove(lessonId); //the remove method removes the specified element from the Set if it is present and returns a boolean indicating whether the element was present.
     }
 

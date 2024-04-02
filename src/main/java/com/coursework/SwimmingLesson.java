@@ -13,7 +13,7 @@ public class SwimmingLesson {
     private String timeSlot;
     private int coachId;
     private int week;       //need to check into this variable, whether to use ot or not
-    private Set<Integer> learnerIds;    // stores IDs of the learners that are enrolled in a particular lesson. this will be created for each instance of lesson.
+    private Set<Integer> learnerIds;    // stores IDs of the learners that are for a particular lesson. this will be created for each instance of lesson.
     private final int maxLearners = 4;  // max capacity of learners that each lesson can hold
     private Map<Integer, String> reviews; // Learner ID to review text
     private Map<Integer, Integer> ratings; // Learner ID to rating
@@ -29,25 +29,22 @@ public class SwimmingLesson {
         this.reviews = new HashMap<>();
         this.ratings = new HashMap<>();
     }
+
     // Getters
     public int getId() {
         return id;
     }
-
     public int getGrade() { return grade; }
-
     public String getDay() {
         return day;
     }
-
     public String getTimeSlot() {
         return timeSlot;
     }
-
     public int getCoachId() {
         return coachId;
     }
-    public int getWeek(){ return week; }
+    public int getWeek(){ return week; }        //haven't used this one yet
     public int getMaxLearners(){ return maxLearners; }
 
     public Set<Integer> getLearnerIds() {   //need to check where it's being used####################################
@@ -60,13 +57,15 @@ public class SwimmingLesson {
     // helps enroll learner for a lesson ,i.e book a lesson
     public boolean addLearner(int learnerId) {
         if (isFull()) {
-            System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
+            System.out.println("Error! Cannot add learner to lesson " + id + ": Lesson is full.");
             return false;
         }
         //learnerIds is a set so there won't be any duplicate bookings for a particular lesson by a particular learner
-        return learnerIds.add(learnerId);
+        return learnerIds.add(learnerId);   //if this statement gets executed it returns value as true
     }
-    public boolean removeLearner(int learnerId) {       //for now, it's getting invoked after attending a lesson
+
+    // helps un-enroll a learner from a lesson
+    public boolean removeLearner(int learnerId) {
         if (learnerIds.contains(learnerId)) {
             learnerIds.remove(learnerId);
             return true;
