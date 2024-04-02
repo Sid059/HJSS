@@ -15,7 +15,7 @@ public class UImain {
             for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t0. To exit")) {
                 System.out.println(s);
             }
-            System.out.println("Please enter your choice of action:");
+            System.out.println("\nPlease enter your choice of action:");
             int choice = sc.nextInt();
             switch (choice){
                 case 1: //book a swimming lesson

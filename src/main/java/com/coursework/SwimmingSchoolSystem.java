@@ -101,7 +101,7 @@ public class SwimmingSchoolSystem {
     }
 
     // displays lessons according to day, coach , grade
-    public void runLessonDisplayInterface() throws InputMismatchException {
+    public void runLessonDisplayInterface() throws InputMismatchException {     //this function is giving some problem when trying to run it twice back to back (fixed now)
         System.out.println("-------------------Days & Timings---------------------"
                 +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
                 +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
@@ -114,17 +114,17 @@ public class SwimmingSchoolSystem {
 
         System.out.println("\nHow would you like to view the available lessons ?"
                           +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
-        String filterType = sc.nextLine().trim();
+        String filterType = sc.next();
 
         if (!filterType.equalsIgnoreCase("day") && !filterType.equalsIgnoreCase("grade") && !filterType.equalsIgnoreCase("coach")) {
             throw new InputMismatchException("Error! Invalid filter type. Please type 'day', 'grade', or 'coach' to view lessons accordingly.");
         }
         System.out.println("\nYou have to enter one value:-"
                 +"\nFor 'day': Please enter name of days ,i.e, 'Monday', 'Wednesday', 'Friday', or 'Saturday'."
-                +"\nFor 'grade': Please enter grade levels ,i.e, '0', '1', '2', '3', '4', or '5'."
+                +"\nFor 'grade': Please enter grade levels ,i.e, '1'(for learners at level 0), '2', '3', '4', or '5'."
                 +"\nFor 'coach': Please enter coach name ,i.e, 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
         System.out.println("\nEnter one value for " + filterType + " : ");
-        String filterValue = sc.nextLine().trim();
+        String filterValue = sc.next();
 
         if(!checkFilterValue(filterValue)) {        //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
             throw new InputMismatchException("Error! Invalid value entered.");
@@ -192,18 +192,26 @@ public class SwimmingSchoolSystem {
             System.out.print("\nSelect lesson ID to book : ");
             int lessonId = sc.nextInt();
 
-            if (bookLessonForLearner(learnerId, lessonId)) {
+            if (isLessonAlreadyBooked(learnerId, lessonId)) {
+                System.out.println("You have already booked this lesson and haven't attended it yet.");
+            }
+            else if (bookLessonForLearner(learnerId, lessonId)) {
                 System.out.println("Lesson booked successfully.");
             }
             else {
                 if (!lessons.contains(lessonId)) {
-                    System.out.println("Error! You have entered wrong lesson Id.");
+                    System.out.println("Error! Please enter an appropriate lesson ID.");
                 }
                 else {
-                    System.out.println("Oops! Failed to book lesson. It might be because you already have an existing booking for this lesson or because it doesn't match lesson's grade level.");
+                    System.out.println("Oops! Failed to book lesson. It might be because it doesn't match lesson's grade level.");
                 }
             }
         }
+    }
+    private boolean isLessonAlreadyBooked(int learnerId, int lessonId) {
+        // This method checks if the learnerId is associated with the lessonId in a way that indicates booking but not attendance.
+        SwimmingLesson lesson = findLessonById(lessonId);
+        return lesson != null && lesson.isLearnerEnrolled(learnerId);
     }
     private boolean bookLessonForLearner(int learnerId, int lessonId) {     //returns true if lesson has been booked
         for (SwimmingLesson lesson : lessons) {
