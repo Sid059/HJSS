@@ -57,7 +57,7 @@ public class SwimmingLesson {
         return learnerIds.size() >= maxLearners;
     }
 
-    //manages the booking at the individual lesson level.
+    // helps enroll learner for a lesson ,i.e book a lesson
     public boolean addLearner(int learnerId) {
         if (isFull()) {
             System.out.println("Cannot add learner to lesson " + id + ": Lesson is full.");
@@ -80,6 +80,7 @@ public class SwimmingLesson {
         ratings.put(learnerId, rating);
     }
 
+
     //checks if the learnerId passed is enrolled for the particular lesson or not
     public boolean isLearnerEnrolled(int learnerId) {
         return learnerIds.contains(learnerId);
@@ -101,10 +102,6 @@ public class SwimmingLesson {
         return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
-    // Method to check if a learner is booked for this lesson
-    public boolean isLearnerBooked(int learnerId) {
-        return learnerIds.contains(learnerId);      //keeping it for future purpose if in case i need it
-    }
     public String getDetails() {
         // Construct and return a string representing the lesson's details
         return String.format("Lesson ID: %d, Grade: %d, Day: %s, Time Slot: %s", id, grade, day, timeSlot);

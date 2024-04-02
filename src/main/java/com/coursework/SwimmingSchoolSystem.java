@@ -295,6 +295,8 @@ public class SwimmingSchoolSystem {
             }
             //records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
             lesson.recordFeedback(learnerId, review, rating);
+            //records same rating for the particular coach as well for particular lesson
+            giveCoachRating(lesson.getCoachId(),rating);
 
             if(lesson.removeLearner(learnerId)){    //can use this function to cancel booking as well############################
                 System.out.println("Feedback recorded successfully.");
@@ -302,6 +304,15 @@ public class SwimmingSchoolSystem {
         }
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+        }
+    }
+    // helps in giving rating to each coach for each lesson
+    private void giveCoachRating(int coachId, int rating) {
+        for (Coach coach : coaches) {
+            if (coach.getId() == coachId) {
+                coach.addRating(rating);
+                break;
+            }
         }
     }
 

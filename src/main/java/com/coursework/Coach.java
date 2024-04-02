@@ -7,7 +7,7 @@ public class Coach {
     private final int id;
     private String name;
     private List<Integer> taughtLessonIds; // List of IDs for lessons assigned to the coach
-    private List<Integer> ratings; // Ratings received from learners
+    private List<Integer> ratings; // stores list of ratings for each coach received from lessons
 
     public Coach(String name, int ID) {
         this.id = ID;
@@ -30,7 +30,14 @@ public class Coach {
     }
 
     public List<Integer> getRatings() {
-        return new ArrayList<>(ratings); // Return a copy to protect the internal list
+        return new ArrayList<>(ratings); // Returns a copy of the ratings for each coach, this is to protect the internal list
+    }
+    public void printRatings() {        //can be used to see all the ratings that the coach received
+        List<Integer> ratings = getRatings();
+        System.out.println("Ratings:");
+        for (Integer rating : ratings) {
+            System.out.println(rating);
+        }
     }
 
     // Assign a lesson to this coach
@@ -40,8 +47,8 @@ public class Coach {
         }
     }*/
 
-    // Add a rating for this coach
-    public void addRating(int rating) {     //wherever this function will be invoked don't forget to add a prompt which asks user to enter rating b/w 1 & 5
+    // Adds a rating to the list of ratings to each coach for each lesson
+    public void addRating(int rating) {
         if (rating >= 1 && rating <= 5) {
             ratings.add(rating);
         } else {
