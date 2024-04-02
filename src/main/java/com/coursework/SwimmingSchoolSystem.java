@@ -365,9 +365,14 @@ public class SwimmingSchoolSystem {
         if(learner == null){
             throw new IllegalArgumentException("Error! No learner with this ID has been registered yet.");
         }
+        //checks if the list that stores the bookings for each learner is empty
+        if(learner.getBookedLessonIds().isEmpty()){
+            throw new IllegalArgumentException("You don't have any bookings to cancel/change.");
+        }
 
         System.out.println("Below is the list of the lessons that you have booked:- ");
 
+        //displays list of bookings that learner has, it's his own list that keeps record of bookings
         learner.getBookedLessonIds().forEach(id -> {
             SwimmingLesson lesson = findLessonById(id);
             System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
@@ -384,7 +389,7 @@ public class SwimmingSchoolSystem {
             if (cancelBooking(learnerId, lessonId)) {
                 System.out.println("Booking cancelled successfully.");
             } else {
-                System.out.println("Failed to cancel booking.");
+                System.out.println("Failed to cancel booking. Ensure the lesson ID is correct and try again.");
             }
         }
         //to change
@@ -392,7 +397,7 @@ public class SwimmingSchoolSystem {
             //displays list of available lessons according to learners grade level
             displayAvailableLessonsForLearner(learnerId);
 
-            System.out.print("Enter new lesson ID for booking: ");
+            System.out.println("\nFrom the list of lessons given above, enter one lesson ID for booking: ");
             int newLessonId = sc.nextInt();
             if (changeBooking(learnerId, lessonId, newLessonId)) {
                 System.out.println("Booking changed successfully.");
@@ -417,11 +422,16 @@ public class SwimmingSchoolSystem {
     }
 
     public boolean changeBooking(int learnerId, int oldLessonId, int newLessonId) {
+
         // First, trying to cancel the existing booking
-        if (!cancelBooking(learnerId, oldLessonId)) {
+        if (!cancelBooking(learnerId, oldLessonId)) {       //once invoked it cancels the booking irrespective of the return value
             return false;
         }
-
+        else if(oldLessonId == newLessonId){
+            System.out.println("Error! You tried changing the booking to an already existing one, i.e, LessonID: "+oldLessonId
+                                +"\nYour previous booking has been cancelled. Now you can book a lesson of your preferred choice.");
+            return  false;
+        }
         // Then, trying to book a new lesson
         SwimmingLesson newLesson = findLessonById(newLessonId);
         if (newLesson != null && newLesson.addLearner(learnerId)) {
