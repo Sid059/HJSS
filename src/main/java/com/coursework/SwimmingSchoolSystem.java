@@ -136,7 +136,7 @@ public class SwimmingSchoolSystem {
         displayLessons(filterType, filterValue);
     }
 
-    //need to fix this
+    //###############################need to fix this
     public boolean checkFilterValue(String value){      //checks the filterValue that's been taken as an input
         String [] str = {"Monday","Wednesday","Friday","Saturday","0","1","2","3","4","5","Donald","Ralph","Smith","Spencer","Mike"};
         for(String arr : str){
@@ -200,8 +200,8 @@ public class SwimmingSchoolSystem {
             int lessonId = sc.nextInt();
 
             if (isLessonAlreadyBooked(learnerId, lessonId)) {
-                System.out.println("\nError! You have already booked this lesson and haven't attended it yet."
-                                    +"\nTo book the same lesson again you have to attend it first or Cancel it.");
+                System.out.println("\nError! You have already an existing booking for this lesson."
+                                    +"\nTo rebook the same lesson, either you have to attend it or Cancel it.");
             }
             else if (bookLessonForLearner(learnerId, lessonId)) {
                 System.out.println("Lesson booked successfully.");
@@ -312,7 +312,7 @@ public class SwimmingSchoolSystem {
         }
         System.out.println("Congratulations on completing \'Grade "+lesson.getGrade()+"\' lesson successfully.");
 
-        //Checks if the attended lesson's grade is exactly one level higher than the learner's current grade, if true updates learner's grade to a level higher
+        // checks if the attended lesson's grade is exactly one level higher than the learner's current grade, if true updates learner's grade to a level higher
         if (lesson.getGrade() == learner.getGradeLevel() + 1) {
             learner.updateGradeLevel(lesson.getGrade());
         }
@@ -321,16 +321,18 @@ public class SwimmingSchoolSystem {
         System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
         int rating = sc.nextInt();
 
-        //checks if the value of rating is withing range
+        // checks if the value of rating is withing range
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Error! Rating must be between 1 and 5.");
         }
-        //records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
+        // records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
         lesson.recordFeedback(learnerId, review, rating);
-        //records/gives same rating for the particular coach as well for particular lesson
+        // records/gives same rating for the particular coach as well for particular lesson
         giveCoachRating(lesson.getCoachId(),rating);
 
         if(lesson.removeLearner(learnerId)){
+        // removes bookedLesson details from the list of bookedLessonIds once the learner has attended those lessons.
+        learner.removeBookedLesson(lessonId);
         System.out.println("Feedback recorded successfully.");
         }
     }
@@ -378,8 +380,18 @@ public class SwimmingSchoolSystem {
             System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
         });
 
-        System.out.println("\nEnter lesson ID for the lesson you want to cancel/change: ");
+        System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
         int lessonId = sc.nextInt();
+        SwimmingLesson lesson = findLessonById(lessonId);
+
+        // checks if the lesson entered by the user is a lesson that has already been created and that's present in the lessons list
+        if(lesson == null){
+            throw new IllegalArgumentException("Error! Please enter an appropriate lesson ID.");
+        }
+        // checks if the lesson entered by the user is the one that user has actually booked and not any other available ID's
+        if(!learner.getBookedLessonIds().contains(lessonId)){
+            throw new IllegalArgumentException("Error! You cannot change/cancel a lesson that you haven't booked yet.");
+        }
 
         System.out.println("Choose what action you wish to perform by selecting appropriate number: "+"\n1. Cancel."+"\n2. Change this booking.");
         int choice = sc.nextInt();
@@ -388,23 +400,41 @@ public class SwimmingSchoolSystem {
         if (choice == 1) {
             if (cancelBooking(learnerId, lessonId)) {
                 System.out.println("Booking cancelled successfully.");
-            } else {
-                System.out.println("Failed to cancel booking. Ensure the lesson ID is correct and try again.");
             }
         }
-        //to change
+        // to change
         else if (choice == 2) {
             //displays list of available lessons according to learners grade level
             displayAvailableLessonsForLearner(learnerId);
 
             System.out.println("\nFrom the list of lessons given above, enter one lesson ID for booking: ");
             int newLessonId = sc.nextInt();
+
+            SwimmingLesson newLesson = findLessonById(newLessonId);
+            // checks if learner enters the same lessonId that he/she wanted to change after selecting the change booking option
+            if(lessonId == newLessonId) {
+                System.out.println("Error! Attempting to change to the same lesson, i.e, LessonID: " + lessonId + ". No action taken.");
+                return;
+            }
+            // checks if learners grade is appropriate for the new lesson
+            if(!learner.canBookLesson(newLesson.getGrade())){
+                System.out.println("Error! The chosen lesson's grade is not appropriate for the learner's current grade."
+                                    +"\nTry it again with lessons of same grade as learner's.");
+                return;
+            }
+            // Check if the new lesson can accommodate the learner
+            if (newLesson.isFull()) {
+                System.out.println("Error! The chosen lesson is at full capacity.");
+                return;
+            }
             if (changeBooking(learnerId, lessonId, newLessonId)) {
                 System.out.println("Booking changed successfully.");
-            } else {
+            }
+            else {
                 System.out.println("Failed to change booking.");
             }
-        } else {
+        }
+        else {
             System.out.println("Invalid choice.");
         }
     }
@@ -422,26 +452,8 @@ public class SwimmingSchoolSystem {
     }
 
     public boolean changeBooking(int learnerId, int oldLessonId, int newLessonId) {
-
-        // First, trying to cancel the existing booking
-        if (!cancelBooking(learnerId, oldLessonId)) {       //once invoked it cancels the booking irrespective of the return value
-            return false;
-        }
-        else if(oldLessonId == newLessonId){
-            System.out.println("Error! You tried changing the booking to an already existing one, i.e, LessonID: "+oldLessonId
-                                +"\nYour previous booking has been cancelled. Now you can book a lesson of your preferred choice.");
-            return  false;
-        }
-        // Then, trying to book a new lesson
-        SwimmingLesson newLesson = findLessonById(newLessonId);
-        if (newLesson != null && newLesson.addLearner(learnerId)) {
-            Learner learner = findLearnerById(learnerId);
-            if (learner != null) {
-                learner.keepRecordOfBookedLessons(newLessonId);
-                return true;
-            }
-        }
-        return false;
+        // checks if booking is cancelled and new lesson can be added
+        return cancelBooking(learnerId, oldLessonId) && bookLessonForLearner(learnerId, newLessonId);   //returns true if both the condition satisfies
     }
 
     //displays all registered learners

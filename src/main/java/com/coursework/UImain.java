@@ -47,10 +47,15 @@ public class UImain {
                     break;
 
                 case 4: //monthly learner report
+                    /*remember there is a list called bookedLessonIds that stores learners lessons that they have booked until they have attended them,
+                    after they have attended it the lesson disappears from that list, so we need to create another list for learners which stores the details
+                    of the lessons they have attended so far.
+                    */
                     break;
                 case 5: //monthly coach report
                     break;
                 case 6: //register a new learner
+                    //##################################this is not working properly when running it after running any other function, it's skipping the name taking part
                     try {
                         sss.registerNewLearner();
                     }
