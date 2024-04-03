@@ -332,6 +332,11 @@ public class SwimmingSchoolSystem {
         if (lesson == null) {
             throw new IllegalArgumentException("Error! Lesson not found.");
         }
+        // checks if the learner is attending a lesson that is appropriate to its grade level
+        if (!(learner.getGradeLevel() == lesson.getGrade() || learner.getGradeLevel() + 1 == lesson.getGrade())) {
+            throw new IllegalArgumentException("Error! You can only attend lessons of your current grade or one level higher."
+                    + "\nYour current grade: " + learner.getGradeLevel() + "\nGrade of lesson you're trying to attend: " + lesson.getGrade());
+        }
         // checks if the learnerId passed is enrolled for that particular lesson or not
         if (!lesson.isLearnerEnrolled(learnerId)) {
             throw new IllegalArgumentException("Error! Learner not enrolled in this lesson.");
