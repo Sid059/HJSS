@@ -70,10 +70,20 @@ public class SwimmingSchoolSystem {
         sc.nextLine();
 
         System.out.println("\nRegistration in progress...");
-        System.out.println("Enter your full name : ");
+        // name input and validation
+        System.out.println("Enter your full name (letters only): ");
         String name = sc.nextLine();
-        System.out.println("Enter your gender (M/F): ");
-        char gender = sc.next().charAt(0);
+        if (!name.matches("[a-zA-Z\\s]+")) {
+            throw new IllegalArgumentException("Error! Name must contain letters and spaces only.");
+        }
+        // gender input and validation
+        System.out.println("Enter your gender (M/F/O for Male/Female/Other): ");
+        String genderInput = sc.next().toUpperCase();
+        char gender = genderInput.length() == 1 ? genderInput.charAt(0) : ' ';
+        if (gender != 'M' && gender != 'F' && gender != 'O') {
+            throw new IllegalArgumentException("Error! Gender must be 'M', 'F', or 'O'.");
+        }
+        // age input and validation
         System.out.println("Enter your age (4-11) : ");
         int age;
         int tempAge = sc.nextInt();
@@ -82,8 +92,13 @@ public class SwimmingSchoolSystem {
         } else {
             throw new IllegalArgumentException("Sorry! You cannot register as a learner if your age isn't between 4 and 11.");
         }
-        System.out.println("Enter your contact number : ");
+        // emergency contact input and validation
+        System.out.println("Enter your contact number (up to 10 digits): ");
         String emergencyContact = sc.next();
+        if (emergencyContact.length() > 10 || !emergencyContact.matches("\\d+")) {
+            throw new IllegalArgumentException("Error! Contact number must be up to 10 digits.");
+        }
+        // grade input and validation
         System.out.println("Enter your swimming grade level (0-5) : ");
         int gradeLevel;
         int tempGradeLevel = sc.nextInt();
@@ -93,7 +108,7 @@ public class SwimmingSchoolSystem {
             throw new IllegalArgumentException("Error! Grade level must be between 0 and 5.");
         }
 
-        //creates a new learner object
+        // creates a new learner object
         Learner newRegLearner = new Learner(name,gender,age,emergencyContact,gradeLevel);
         //adding newly registered learner to the list of learners
         learners.add(newRegLearner);
@@ -317,6 +332,7 @@ public class SwimmingSchoolSystem {
         if (lesson == null) {
             throw new IllegalArgumentException("Error! Lesson not found.");
         }
+        // checks if the learnerId passed is enrolled for that particular lesson or not
         if (!lesson.isLearnerEnrolled(learnerId)) {
             throw new IllegalArgumentException("Error! Learner not enrolled in this lesson.");
         }
@@ -326,6 +342,7 @@ public class SwimmingSchoolSystem {
         if (lesson.getGrade() == learner.getGradeLevel() + 1) {
             learner.updateGradeLevel(lesson.getGrade());
         }
+
         System.out.println("\nPlease provide a review about the lesson in a few words: ");
         String review = sc.nextLine();
         System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
@@ -340,9 +357,11 @@ public class SwimmingSchoolSystem {
         // records/gives same rating for the particular coach as well for particular lesson
         giveCoachRating(lesson.getCoachId(),rating);
 
-        if(lesson.removeLearner(learnerId)){
+        if(lesson.removeLearner(learnerId)) {
         // removes bookedLesson details from the list of bookedLessonIds once the learner has attended those lessons.
         learner.removeBookedLesson(lessonId);
+        // stores the lessonId of the lesson that the learner has recently attended in a list, to use it for learner report
+        learner.markLessonAsAttended(lessonId);
         System.out.println("Feedback recorded successfully.");
         }
     }
@@ -454,7 +473,10 @@ public class SwimmingSchoolSystem {
         if (lesson != null && lesson.removeLearner(learnerId)) {        //this statement checks the validity of the lesson, also removes the learner from the lesson using learnerId
             Learner learner = findLearnerById(learnerId);
             if (learner != null) {
-                learner.removeBookedLesson(lessonId);       //this statement removes the lesson being passed from the learner's list that stores bookings for each learner,i.e, bookedLessonIds
+                // this statement removes the lesson being passed from the learner's list that stores bookings for each learner,i.e, bookedLessonIds
+                learner.removeBookedLesson(lessonId);
+                // stores the lessonId of the lesson that the learner has recently cancelled, in a list, to use it for learner report
+                learner.markLessonAsCanceled(lessonId);
                 return true;
             }
         }
@@ -464,6 +486,43 @@ public class SwimmingSchoolSystem {
     public boolean changeBooking(int learnerId, int oldLessonId, int newLessonId) {
         // checks if booking is cancelled and new lesson can be added
         return cancelBooking(learnerId, oldLessonId) && bookLessonForLearner(learnerId, newLessonId);   //returns true if both the condition satisfies
+    }
+
+    // generates report till current time. Includes details about the lessons
+    public void generateMonthlyLearnerReport() {
+        System.out.println("Monthly Learner Report:");
+        for (Learner learner : learners) {
+            System.out.println("\nLearner Name: " + learner.getName());
+            System.out.println("Learner ID: " + learner.getId());
+
+            // Shows current booked Lessons
+            System.out.println("Current Booked Lessons: " + learner.getBookedLessonIds().size());
+            for (Integer lessonId : learner.getBookedLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
+            }
+
+            // Attended Lessons
+            System.out.println("Attended Lessons: " + learner.getAttendedLessonIds().size());
+            for (Integer lessonId : learner.getAttendedLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
+            }
+
+            // Canceled Lessons
+            System.out.println("Canceled Lessons: " + learner.getCanceledLessonIds().size());
+            for (Integer lessonId : learner.getCanceledLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
+            }
+            System.out.println("-------------------------------------------");
+        }
     }
 
     //displays all registered learners

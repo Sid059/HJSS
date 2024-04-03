@@ -80,7 +80,7 @@ public class SwimmingLesson {
     }
 
 
-    //checks if the learnerId passed is enrolled for the particular lesson or not
+    // checks if the learnerId passed is enrolled for the particular lesson or not
     public boolean isLearnerEnrolled(int learnerId) {
         return learnerIds.contains(learnerId);
     }

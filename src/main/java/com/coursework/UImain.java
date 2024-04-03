@@ -38,12 +38,7 @@ public class UImain {
                     break;
 
                 case 3: //attend a swimming lesson
-                    try {
                         sss.attendLessonAndProvideFeedback();
-                    }
-                    catch (Exception e){
-                        System.out.println("An error occurred: " + e.getMessage());
-                    }
                     break;
 
                 case 4: //monthly learner report
@@ -51,6 +46,7 @@ public class UImain {
                     after they have attended it the lesson disappears from that list, so we need to create another list for learners which stores the details
                     of the lessons they have attended so far.
                     */
+                    sss.generateMonthlyLearnerReport();
                     break;
                 case 5: //monthly coach report
                     break;
@@ -59,6 +55,9 @@ public class UImain {
                         sss.registerNewLearner();
                     }
                     catch(IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }
+                    catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                     break;

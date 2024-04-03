@@ -38,13 +38,6 @@ public class Coach {
         }
     }
 
-    // Assign a lesson to this coach
-    /*public void assignLesson(int lessonId) {
-        if (!taughtLessonIds.contains(lessonId)) {
-            taughtLessonIds.add(lessonId);
-        }
-    }*/
-
     // Adds a rating to the list of ratings to each coach for each lesson
     public void addRating(int rating) {
         if (rating >= 1 && rating <= 5) {
