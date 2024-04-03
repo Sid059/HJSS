@@ -55,7 +55,6 @@ public class UImain {
                 case 5: //monthly coach report
                     break;
                 case 6: //register a new learner
-                    //##################################this is not working properly when running it after running any other function, it's skipping the name taking part
                     try {
                         sss.registerNewLearner();
                     }

@@ -1,9 +1,6 @@
 package com.coursework;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class SwimmingSchoolSystem {
     Scanner sc = new Scanner(System.in);
@@ -69,6 +66,9 @@ public class SwimmingSchoolSystem {
 
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{
+        // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the name is correctly waited for and captured.
+        sc.nextLine();
+
         System.out.println("\nRegistration in progress...");
         System.out.println("Enter your full name : ");
         String name = sc.nextLine();
@@ -110,41 +110,51 @@ public class SwimmingSchoolSystem {
                 +"\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
 
         System.out.println("Below is the list of the coaches registered for this program.\n");
-
         //displays the list of all registered coaches with their name and Ids
         showAllCoaches();
 
         System.out.println("\nHow would you like to view the available lessons ?"
                           +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
         String filterType = sc.next();
-
-        if (!filterType.equalsIgnoreCase("day") && !filterType.equalsIgnoreCase("grade") && !filterType.equalsIgnoreCase("coach")) {
+        if (filterType.equalsIgnoreCase("day")) {
+            System.out.println("You have to enter one value:-"+"\nFor 'day': 'Monday', 'Wednesday', 'Friday', or 'Saturday'.");
+        }
+        else if (filterType.equalsIgnoreCase("grade")) {
+            System.out.println("You have to enter one value:-"+"\nFor 'grade': '1'( for learners at level 0 & 1), '2', '3', '4', or '5'.");
+        }
+        else if (filterType.equalsIgnoreCase("coach")) {
+            System.out.println("You have to enter one value:-"+"\nFor 'coach': 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
+        }
+        else{
             throw new InputMismatchException("Error! Invalid filter type. Please type 'day', 'grade', or 'coach' to view lessons accordingly.");
         }
-        System.out.println("\nYou have to enter one value:-"
-                +"\nFor 'day': Please enter name of days ,i.e, 'Monday', 'Wednesday', 'Friday', or 'Saturday'."
-                +"\nFor 'grade': Please enter grade levels ,i.e, '1'(for learners at level 0), '2', '3', '4', or '5'."
-                +"\nFor 'coach': Please enter coach name ,i.e, 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
-        System.out.println("\nEnter one value for " + filterType + " : ");
-        String filterValue = sc.next();
 
-        if(!checkFilterValue(filterValue)) {        //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
-            throw new InputMismatchException("Error! Invalid value entered.");
+        System.out.println("\nEnter one value for " + filterType + ":-");
+        String filterValue = sc.next();
+        //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
+        if(!checkFilterValue(filterType,filterValue)) {
+            throw new InputMismatchException("Error! Invalid value entered for " + filterType + ".");
         }
 
         //displays lessons according to the filter
         displayLessons(filterType, filterValue);
     }
 
-    //###############################need to fix this
-    public boolean checkFilterValue(String value){      //checks the filterValue that's been taken as an input
-        String [] str = {"Monday","Wednesday","Friday","Saturday","0","1","2","3","4","5","Donald","Ralph","Smith","Spencer","Mike"};
-        for(String arr : str){
-            if(value.equalsIgnoreCase(arr)){
-                return true;
-            }
+    // checks the filterValue that's been taken as an input
+    public boolean checkFilterValue(String filterType, String value) {
+        // converting the value to lower case for a case-insensitive comparison
+        String lowerCaseValue = value.toLowerCase();
+        switch (filterType.toLowerCase()) {
+            case "day":
+                return Arrays.asList("monday", "wednesday", "friday", "saturday").contains(lowerCaseValue);
+            case "grade":
+                // Grades are numeric and case-insensitive by nature
+                return Arrays.asList("1", "2", "3", "4", "5").contains(value);
+            case "coach":
+                return Arrays.asList("donald", "ralph", "smith", "spencer", "mike").contains(lowerCaseValue);
+            default:
+                return false;       // when invalid filter type
         }
-        return false;
     }
 
     public void displayLessons(String filterType, String filterValue) {
