@@ -16,7 +16,6 @@ public class SwimmingLesson {
     private Set<Integer> learnerIds;    // stores IDs of the learners that are for a particular lesson. this will be created for each instance of lesson.
     private final int maxLearners = 4;  // max capacity of learners that each lesson can hold
     private Map<Integer, String> reviews; // Learner ID to review text
-    private Map<Integer, Integer> ratings; // Learner ID to rating
 
     public SwimmingLesson(int grade, String day, String timeSlot, int coachId, int week) {
         this.id = nextId++;
@@ -27,7 +26,6 @@ public class SwimmingLesson {
         this.week = week;
         this.learnerIds = new HashSet<>();
         this.reviews = new HashMap<>();
-        this.ratings = new HashMap<>();
     }
 
     // Getters
@@ -74,11 +72,9 @@ public class SwimmingLesson {
     }
 
     // records feedback and rating
-    public void recordFeedback(int learnerId, String review, int rating) {
+    public void recordFeedback(int learnerId, String review) {
         reviews.put(learnerId, review);
-        ratings.put(learnerId, rating);
     }
-
 
     // checks if the learnerId passed is enrolled for the particular lesson or not
     public boolean isLearnerEnrolled(int learnerId) {
@@ -87,18 +83,6 @@ public class SwimmingLesson {
 
     public Map<Integer, String> getAllReviews() {
         return new HashMap<>(reviews); // Protect the internal structure
-    }
-
-    public Map<Integer, Integer> getAllRatings() {
-        return new HashMap<>(ratings); // Protect the internal structure
-    }
-
-    // Calculate the average rating for this lesson
-    public double calculateAverageRating() {        // will remove it in future
-        if (ratings.isEmpty()) {
-            return 0.0;
-        }
-        return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
     public String getDetails() {

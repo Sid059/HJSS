@@ -49,15 +49,13 @@ public class UImain {
                     sss.generateMonthlyLearnerReport();
                     break;
                 case 5: //monthly coach report
+                    sss.generateMonthlyCoachReport();
                     break;
                 case 6: //register a new learner
                     try {
                         sss.registerNewLearner();
                     }
                     catch(IllegalArgumentException e){
-                        System.out.println(e.getMessage());
-                    }
-                    catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                     break;

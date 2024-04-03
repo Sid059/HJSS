@@ -30,13 +30,13 @@ public class Coach {
         return new ArrayList<>(ratings); // Returns a copy of the ratings for each coach, this is to protect the internal list
     }
 
-    public void printRatings() {        //can be used to see all the ratings that the coach received
+    /*public void printRatings() {        //can be used to see all the ratings that the coach received
         List<Integer> ratings = getRatings();
         System.out.println("Ratings:");
         for (Integer rating : ratings) {
             System.out.println(rating);
         }
-    }
+    }*/
 
     // Adds a rating to the list of ratings to each coach for each lesson
     public void addRating(int rating) {

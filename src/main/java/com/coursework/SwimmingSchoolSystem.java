@@ -73,14 +73,14 @@ public class SwimmingSchoolSystem {
         // name input and validation
         System.out.println("Enter your full name (letters only): ");
         String name = sc.nextLine();
-        if (!name.matches("[a-zA-Z\\s]+")) {
+        if (!name.matches("[a-zA-Z\\s]+")) {        //a-zA-Z for checking alphabets, \s for whitespaces ,+ so that there can be one or more occurrence of the preceding elements
             throw new IllegalArgumentException("Error! Name must contain letters and spaces only.");
         }
         // gender input and validation
         System.out.println("Enter your gender (M/F/O for Male/Female/Other): ");
         String genderInput = sc.next().toUpperCase();
-        char gender = genderInput.length() == 1 ? genderInput.charAt(0) : ' ';
-        if (gender != 'M' && gender != 'F' && gender != 'O') {
+        char gender = genderInput.length() == 1 ? genderInput.charAt(0) : ' ';      //checks for char value
+        if (gender != 'M' && gender != 'F' && gender != 'O') {          //checks for right character entry
             throw new IllegalArgumentException("Error! Gender must be 'M', 'F', or 'O'.");
         }
         // age input and validation
@@ -95,8 +95,8 @@ public class SwimmingSchoolSystem {
         // emergency contact input and validation
         System.out.println("Enter your contact number (up to 10 digits): ");
         String emergencyContact = sc.next();
-        if (emergencyContact.length() > 10 || !emergencyContact.matches("\\d+")) {
-            throw new IllegalArgumentException("Error! Contact number must be up to 10 digits.");
+        if (emergencyContact.length() > 10 || !emergencyContact.matches("\\d+")) {      //\\d to check if the contact number contains digits 0-9 , + because there can be more than one occurrence of digits
+            throw new IllegalArgumentException("Error! Contact number must be up to 10 digits(0-9).");
         }
         // grade input and validation
         System.out.println("Enter your swimming grade level (0-5) : ");
@@ -352,9 +352,9 @@ public class SwimmingSchoolSystem {
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Error! Rating must be between 1 and 5.");
         }
-        // records feedback and rating for the particular lesson that was attended by storing it inside the reviews and rating HashMaps
-        lesson.recordFeedback(learnerId, review, rating);
-        // records/gives same rating for the particular coach as well for particular lesson
+        // records feedback for the particular lesson that was attended by storing it inside the reviews HashMaps
+        lesson.recordFeedback(learnerId, review);
+        // records/gives rating for the particular coach which was given for that particular lesson earlier
         giveCoachRating(lesson.getCoachId(),rating);
 
         if(lesson.removeLearner(learnerId)) {
@@ -522,6 +522,17 @@ public class SwimmingSchoolSystem {
                 }
             }
             System.out.println("-------------------------------------------");
+        }
+    }
+
+    public void generateMonthlyCoachReport() {
+        System.out.println("Monthly Coach Report:");
+        for (Coach coach : coaches) {
+            // Assuming each Coach object has a method to calculate the average rating
+            double averageRating = coach.calculateAverageRating();
+            System.out.println("Coach Name: " + coach.getName());
+            System.out.println("Average Rating: " + averageRating);
+            System.out.println("------------------------------------------------");
         }
     }
 
