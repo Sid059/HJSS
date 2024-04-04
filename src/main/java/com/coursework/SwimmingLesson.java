@@ -81,9 +81,15 @@ public class SwimmingLesson {
         return learnerIds.contains(learnerId);
     }
 
-    public Map<Integer, String> getAllReviews() {
-        return new HashMap<>(reviews); // Protect the internal structure
+    //public Map<Integer, String> getAllReviews() {
+    //    return new HashMap<>(reviews); // Protect the internal structure
+    //}
+
+    // if you just want to fetch a specific learner's review for that particular lesson
+    public String getReview(int learnerId) {
+        return reviews.getOrDefault(learnerId, "No review submitted");
     }
+
 
     public String getDetails() {
         // Construct and return a string representing the lesson's details

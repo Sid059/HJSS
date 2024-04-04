@@ -65,7 +65,7 @@ public class SwimmingSchoolSystem {
     }
 
     //method to register a new learner
-    public void registerNewLearner() throws IllegalArgumentException{       //need to fix the skipping part
+    public void registerNewLearner() throws IllegalArgumentException{       //need to fix the skipping part ; exception handled
         // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the name is correctly waited for and captured.
         sc.nextLine();
         System.out.println("\nRegistration in progress...");
@@ -83,27 +83,37 @@ public class SwimmingSchoolSystem {
             throw new IllegalArgumentException("Error! Gender must be 'M', 'F', or 'O'.");
         }
         // age input and validation
-        System.out.println("Enter your age (4-11) : ");
-        int age;
-        int tempAge = sc.nextInt();
-        if (tempAge >= 4 && tempAge <= 11) {
-             age = tempAge;
-        } else {
+        int age = 0;
+        try {
+            System.out.println("Enter your age (4-11): ");
+            age = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Age must be in number.");
+            sc.next();      // to consume the wrong input from the scanner
+            return;
+        }
+        if (age < 4 || age > 11) {
             throw new IllegalArgumentException("Sorry! You cannot register as a learner if your age isn't between 4 and 11.");
         }
         // emergency contact input and validation
-        System.out.println("Enter your contact number (up to 10 digits): ");
+        System.out.println("Enter your 10 digit contact number: ");
         String emergencyContact = sc.next();
-        if (emergencyContact.length() > 10 || !emergencyContact.matches("\\d+")) {      //\\d to check if the contact number contains digits 0-9 , + because there can be more than one occurrence of digits
+        if (emergencyContact.length() != 10 || !emergencyContact.matches("\\d+")) {      //\\d to check if the contact number contains digits 0-9 , + because there can be more than one occurrence of digits
             throw new IllegalArgumentException("Error! Contact number must be up to 10 digits(0-9).");
         }
         // grade input and validation
-        System.out.println("Enter your swimming grade level (0-5) : ");
-        int gradeLevel;
-        int tempGradeLevel = sc.nextInt();
-        if (tempGradeLevel >= 0 && tempGradeLevel <= 5) {
-            gradeLevel = tempGradeLevel;
-        } else {
+        int gradeLevel = 0;
+        try {
+            System.out.println("Enter your swimming grade level (0-5) : ");
+            gradeLevel = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Grade must be in number.");
+            sc.next();
+            return;
+        }
+        if (gradeLevel < 0 || gradeLevel > 5) {
             throw new IllegalArgumentException("Error! Grade level must be between 0 and 5.");
         }
 
@@ -207,21 +217,36 @@ public class SwimmingSchoolSystem {
     }
 
     //books lesson for learner
-    public void bookLesson() {                  //########### need to handle exception that occurs when taking input for learner and lesson ID
+    public void bookLesson() {                  //exception handled
         System.out.println("\nLesson Booking in progress...");
 
         // Display all learners for selection
         System.out.println("#---------------Available Learners------------------#");
         showAllLearners(); //displays all registered learners
-
-        System.out.print("\nEnter learner ID to book a lesson for : ");
-        int learnerId = sc.nextInt();
+        int learnerId = 0;
+        try {
+            System.out.print("\nEnter learner ID to book a lesson for : ");
+            learnerId = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate learner ID.");
+            sc.next();      // to consume the wrong input from scanner
+            return;
+        }
 
         //shows available lessons according to learners grade level also checks if the learner is registered or not before booking and showing available lessons
         boolean success = displayAvailableLessonsForLearner(learnerId);
         if (success) {
-            System.out.print("\nSelect lesson ID to book : ");
-            int lessonId = sc.nextInt();
+            int lessonId = 0;
+            try {
+                System.out.print("\nSelect lesson ID to book : ");
+                lessonId = sc.nextInt();
+            }
+            catch(Exception e){
+                System.out.println("Error! Please enter an appropriate learner ID.");
+                sc.next();      // to consume the wrong input from the scanner
+                return;
+            }
 
             if (isLessonAlreadyBooked(learnerId, lessonId)) {
                 System.out.println("\nError! You have already an existing booking for this lesson."
@@ -278,7 +303,6 @@ public class SwimmingSchoolSystem {
         Learner selectedLearner = findLearnerById(learnerId);
         if (selectedLearner == null) {
             System.out.println("\nError! Learner not found. You need to register as a learner first to a book lesson.");
-            System.out.println("Redirecting to the main menu...");
             return false;
         }
 
@@ -301,18 +325,38 @@ public class SwimmingSchoolSystem {
     }
 
     // helps attend lessons and provide reviews and ratings accordingly
-    public void attendLessonAndProvideFeedback() throws IllegalArgumentException{
+    public void attendLessonAndProvideFeedback() throws IllegalArgumentException{       //exception handled
         System.out.println("\nAttending a lesson and providing feedback...");
-        System.out.println("Enter learner ID: ");
-        int learnerId = sc.nextInt();
+        int learnerId = 0;
+        try {
+            System.out.println("Enter learner ID: ");
+            learnerId = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate learner ID.");
+            sc.next();      // to consume the wrong input from scanner
+            return;
+        }
+
         Learner learner = findLearnerById(learnerId);
         // checks if the learnerId entered is a registered one,i.e, it should be present inside the learners list
         if(learner == null ){
             throw new IllegalArgumentException("Error! No learner with this ID has been registered yet.");
         }
+        if(learner.getBookedLessonIds().isEmpty()){
+            throw new IllegalArgumentException("Sorry, You haven't booked any lesson that you can attend.");
+        }
+        int lessonId = 0;
+        try {
+            System.out.println("Enter ID of the lesson you want to attend: ");
+            lessonId = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate lesson ID.");
+            sc.next();      // to consume the wrong input from scanner
+            return;
+        }
 
-        System.out.println("Enter ID of the lesson you want to attend: ");
-        int lessonId = sc.nextInt();
         SwimmingLesson lesson = findLessonById(lessonId);
         // checks if the lessonId entered belongs to a lesson that exists,i.e, it should be present inside the list of created lessons
         if (lesson == null) {
@@ -331,7 +375,7 @@ public class SwimmingSchoolSystem {
     }
 
     // helps in attending lesson, providing review and rating for the lesson attended, and also providing rating for the coach assigned to that lesson
-    public void attendLesson(int learnerId, int lessonId) throws IllegalArgumentException {
+    public void attendLesson(int learnerId, int lessonId) throws IllegalArgumentException {     //exception handled
         SwimmingLesson lesson = findLessonById(lessonId);
         Learner learner = findLearnerById(learnerId);
 
@@ -363,13 +407,28 @@ public class SwimmingSchoolSystem {
 
         System.out.println("\nPlease provide a review about the lesson in a few words: ");
         String review = sc.nextLine();
-        System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
+        int rating;
+        do {
+            System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-" + "\n1: Very dissatisfied" + "\n2: Dissatisfied" + "\n3: Okay" + "\n4: Satisfied" + "\n5: Very Satisfied" + "\nEnter a value to rate this lesson: ");
+            while (!sc.hasNextInt()) {
+                System.out.println("That's not a number. Please enter a number between 1 and 5.");
+                sc.next(); // Clears the invalid input
+            }
+            rating = sc.nextInt();
+            if (rating < 1 || rating > 5) {
+                System.out.println("Error! Rating must be between 1 and 5.");
+            }
+        } while (rating < 1 || rating > 5);
+
+        /*System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
         int rating = sc.nextInt();
 
         // checks if the value of rating is withing range
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Error! Rating must be between 1 and 5.");
         }
+        */
+
         // records feedback for the particular lesson that was attended by storing it inside the reviews HashMaps
         lesson.recordFeedback(learnerId, review);
         // records/gives rating for the particular coach which was given for that particular lesson earlier
@@ -404,10 +463,18 @@ public class SwimmingSchoolSystem {
     }
 
     // helps in cancelling a booked lesson, also helps in changing the booking,i.e, booking another lesson in place of previous lesson
-    public void changeOrCancelBooking() throws IllegalArgumentException{
+    public void changeOrCancelBooking() throws IllegalArgumentException{        //exception handled
         System.out.println("\nChanging or cancelling a booking...");
-        System.out.println("Enter learner ID: ");
-        int learnerId = sc.nextInt();
+        int learnerId = 0;
+        try {
+            System.out.println("Enter learner ID: ");
+            learnerId = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate learner ID.");
+            sc.next();      // to consume the wrong input from scanner
+            return;
+        }
 
         Learner learner = findLearnerById(learnerId);
         //checks if the learnerId entered is a registered one, if so it should be present inside the learners list
@@ -427,8 +494,16 @@ public class SwimmingSchoolSystem {
             System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
         });
 
-        System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
-        int lessonId = sc.nextInt();
+        int lessonId = 0;
+        try {
+            System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
+            lessonId = sc.nextInt();
+        }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate lesson ID.");
+            sc.next();      // to consume the wrong input from scanner
+            return;
+        }
         SwimmingLesson lesson = findLessonById(lessonId);
 
         // checks if the lesson entered by the user is a lesson that has already been created and that's present in the lessons list
@@ -462,6 +537,10 @@ public class SwimmingSchoolSystem {
             if(lessonId == newLessonId) {
                 System.out.println("Error! Attempting to change to the same lesson, i.e, LessonID: " + lessonId + ". No action taken.");
                 return;
+            }
+            if(learner.getBookedLessonIds().contains(newLessonId))
+            {
+                throw new IllegalArgumentException("Error! You already have an existing booking for the requested lesson, i.e, LessonID: " + lessonId + ". No action taken.");
             }
             // checks if learners grade is appropriate for the new lesson
             if(!learner.canBookLesson(newLesson.getGrade())){
@@ -522,12 +601,13 @@ public class SwimmingSchoolSystem {
                 }
             }
 
-            // Attended Lessons
+            // Attended Lessons and Reviews
             System.out.println("Attended Lessons: " + learner.getAttendedLessonIds().size());
             for (Integer lessonId : learner.getAttendedLessonIds()) {
                 SwimmingLesson lesson = findLessonById(lessonId);
                 if (lesson != null) {
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                    String review = lesson.getReview(learner.getId());
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot() + ", Review: \"" + review + "\"");
                 }
             }
 

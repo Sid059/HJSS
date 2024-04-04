@@ -11,8 +11,8 @@ public class Learner {
     private String emergencyContact;
     private int gradeLevel;
     private Set<Integer> bookedLessonIds; // Stores IDs of booked lessons for each learner until they have attended those lessons
-    private Set<Integer> attendedLessonIds;
-    private Set<Integer> canceledLessonIds;
+    private Set<Integer> attendedLessonIds; // stores the lessonId of the lesson that the learner has recently attended in a list, to use it for learner report
+    private Set<Integer> canceledLessonIds; // stores the lessonId of the lesson that the learner has recently cancelled, in a list, to use it for learner report
 
     public Learner(String name, char gender, int age, String emergencyContact, int gradeLevel) {
         this.id = (int) (Math.random() * 9000) + 1000;
