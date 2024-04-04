@@ -1,5 +1,5 @@
 package com.coursework;
-//##########################need to handle exception for this class handle it when taking string as input
+
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -15,8 +15,18 @@ public class UImain {
             for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t0. To exit")) {
                 System.out.println(s);
             }
-            System.out.println("\nPlease enter your choice of action:");
-            int choice = sc.nextInt();
+            int choice = 0;
+            int counter = 0;
+            while(counter == 0){        // keeps on iterating until user enters a number.
+                try {
+                    System.out.println("\nPlease enter your choice of action:");
+                    choice = sc.nextInt();
+                    counter = 1;
+                } catch (Exception e) {
+                    System.out.println("Error! Enter an appropriate number.");
+                    sc.next();
+                }
+            }
             switch (choice) {
                 case 1: //book a swimming lesson
                     try {
@@ -59,7 +69,7 @@ public class UImain {
                     System.out.println("Exiting system...");
                     break;
                 default:
-                    System.out.println("please select an appropriate action!");
+                    System.out.println("Please select an appropriate action!");
             }
         }
     }
