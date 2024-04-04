@@ -65,10 +65,9 @@ public class SwimmingSchoolSystem {
     }
 
     //method to register a new learner
-    public void registerNewLearner() throws IllegalArgumentException{
+    public void registerNewLearner() throws IllegalArgumentException{       //need to fix the skipping part
         // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the name is correctly waited for and captured.
         sc.nextLine();
-
         System.out.println("\nRegistration in progress...");
         // name input and validation
         System.out.println("Enter your full name (letters only): ");
@@ -117,7 +116,7 @@ public class SwimmingSchoolSystem {
     }
 
     // displays lessons according to day, coach , grade
-    public void runLessonDisplayInterface() throws InputMismatchException {
+    public void runLessonDisplayInterface() throws InputMismatchException {     //exception handled
         System.out.println("-------------------Days & Timings---------------------"
                 +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
                 +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
@@ -208,7 +207,7 @@ public class SwimmingSchoolSystem {
     }
 
     //books lesson for learner
-    public void bookLesson() {
+    public void bookLesson() {                  //########### need to handle exception that occurs when taking input for learner and lesson ID
         System.out.println("\nLesson Booking in progress...");
 
         // Display all learners for selection
@@ -279,6 +278,7 @@ public class SwimmingSchoolSystem {
         Learner selectedLearner = findLearnerById(learnerId);
         if (selectedLearner == null) {
             System.out.println("\nError! Learner not found. You need to register as a learner first to a book lesson.");
+            System.out.println("Redirecting to the main menu...");
             return false;
         }
 
@@ -301,18 +301,29 @@ public class SwimmingSchoolSystem {
     }
 
     // helps attend lessons and provide reviews and ratings accordingly
-    public void attendLessonAndProvideFeedback() {
+    public void attendLessonAndProvideFeedback() throws IllegalArgumentException{
         System.out.println("\nAttending a lesson and providing feedback...");
         System.out.println("Enter learner ID: ");
         int learnerId = sc.nextInt();
+        Learner learner = findLearnerById(learnerId);
+        // checks if the learnerId entered is a registered one,i.e, it should be present inside the learners list
+        if(learner == null ){
+            throw new IllegalArgumentException("Error! No learner with this ID has been registered yet.");
+        }
+
         System.out.println("Enter ID of the lesson you want to attend: ");
         int lessonId = sc.nextInt();
+        SwimmingLesson lesson = findLessonById(lessonId);
+        // checks if the lessonId entered belongs to a lesson that exists,i.e, it should be present inside the list of created lessons
+        if (lesson == null) {
+            throw new IllegalArgumentException("Error! Lesson not found.");
+        }
 
         // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the review is correctly waited for and captured.
         sc.nextLine();
+        try{
         //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
-        try {
-            attendLesson(learnerId, lessonId);
+        attendLesson(learnerId, lessonId);
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
@@ -335,7 +346,9 @@ public class SwimmingSchoolSystem {
         // checks if the learner is attending a lesson that is appropriate to its grade level
         if (!(learner.getGradeLevel() == lesson.getGrade() || learner.getGradeLevel() + 1 == lesson.getGrade())) {
             throw new IllegalArgumentException("Error! You can only attend lessons of your current grade or one level higher."
-                    + "\nYour current grade: " + learner.getGradeLevel() + "\nGrade of lesson you're trying to attend: " + lesson.getGrade());
+                    + "\nYour current grade: " + learner.getGradeLevel() + "\nGrade of lesson you're trying to attend: " + lesson.getGrade()
+                    + "\nSince you can no longer attend it, you have to cancel or change this booking.");
+
         }
         // checks if the learnerId passed is enrolled for that particular lesson or not
         if (!lesson.isLearnerEnrolled(learnerId)) {
@@ -391,7 +404,7 @@ public class SwimmingSchoolSystem {
     }
 
     // helps in cancelling a booked lesson, also helps in changing the booking,i.e, booking another lesson in place of previous lesson
-    public void changeOrCancelBooking() throws IllegalArgumentException{       //need to implement error handling
+    public void changeOrCancelBooking() throws IllegalArgumentException{
         System.out.println("\nChanging or cancelling a booking...");
         System.out.println("Enter learner ID: ");
         int learnerId = sc.nextInt();

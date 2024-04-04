@@ -6,7 +6,7 @@ import java.util.List;
 public class Coach {
     private final int id;
     private String name;
-    private List<Integer> taughtLessonIds; // List of IDs for lessons assigned to the coach
+    private List<Integer> taughtLessonIds; // List of IDs for lessons assigned to the coach. haven't used it yet
     private List<Integer> ratings; // stores list of ratings for each coach received from lessons
 
     public Coach(String name, int ID) {
