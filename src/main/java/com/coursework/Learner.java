@@ -54,13 +54,13 @@ public class Learner {
     }
 
     // adds the lessonId's of the lesson booked by the learner in a separate list ,i.e, bookedLessonIds which keeps record of all the bookings that learner has not attended yet
-    public boolean keepRecordOfBookedLessons(int lessonId) {
-        return bookedLessonIds.add(lessonId);   // adds the specified element to the Set if it is not already present, and returns a boolean indicating whether the element was added
+    public void keepRecordOfBookedLessons(int lessonId) {
+        bookedLessonIds.add(lessonId);   // adds the specified element to the Set if it is not already present
     }
 
     // removes the lessonId from the list of lessons(when learner attends that lesson)that was being stored to keep record of all the bookings for each learner
-    public boolean removeBookedLesson(int lessonId) {
-        return bookedLessonIds.remove(lessonId); //the remove method removes the specified element from the Set if it is present and returns a boolean indicating whether the element was present.
+    public void removeBookedLesson(int lessonId) {
+        bookedLessonIds.remove(lessonId); //the remove method removes the specified element from the Set if it is present
     }
 
     // Checks if the learner can book a lesson of a specific grade

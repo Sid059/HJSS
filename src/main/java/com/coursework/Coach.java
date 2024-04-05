@@ -23,6 +23,7 @@ public class Coach {
     public String getName() {
         return name;
     }
+
     /*public List<Integer> getTaughtLessonIds() {
         return new ArrayList<>(taughtLessonIds); // Return a copy to protect the internal list
     }*/
