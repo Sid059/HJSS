@@ -9,7 +9,7 @@ class LearnerTest {
     private Learner learner;
     @BeforeEach
     void setUp(){
-        learner = new Learner("John Doe", 'M', 9, "1234567890", 2); // mock learner
+        learner = new Learner("John Wick", 'M', 9, "1234567890", 2); // mock learner
     }
     @Test
     void testCanBookLesson_SameGrade() {

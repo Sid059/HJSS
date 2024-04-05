@@ -27,9 +27,9 @@ public class Coach {
     /*public List<Integer> getTaughtLessonIds() {
         return new ArrayList<>(taughtLessonIds); // Return a copy to protect the internal list
     }*/
-    /*public List<Integer> getRatings() {
+    public List<Integer> getRatings() {
         return new ArrayList<>(ratings); // Returns a copy of the ratings for each coach, this is to protect the internal list
-    }*/
+    }
 
     /*public void printRatings() {        //can be used to see all the ratings that the coach received
         List<Integer> ratings = getRatings();
