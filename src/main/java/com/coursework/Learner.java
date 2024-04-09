@@ -26,6 +26,11 @@ public class Learner {
         this.canceledLessonIds = new HashSet<>();
     }
 
+    //setter        this will set grade for preregistered learners
+    public void setGradeLevel(int newGrade){
+        this.gradeLevel = newGrade;
+    }
+
     //Getters
     public String getName() {
         return name;

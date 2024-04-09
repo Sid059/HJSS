@@ -11,7 +11,17 @@ public class SwimmingSchoolSystem {
         initializeCoaches();
         initializeLessons();
         initializePreregisteredLearners();
+
+        autoBookLessonsForLearners();
+        autoAttendAndRateLessons();     //need to fix this
+        autoCancelBookingsForLearners();
+        autoChangeBookingsForLearners();
+
+        //need to create a function that will book lessons for previous learners
+        //need to create a function that will attend lessons for previous learners
+        //need to create a function that will cancel lessons for previous learners
     }
+
     private void initializePreregisteredLearners(){
         learners.add(new Learner("Siddharth Rai", 'M',7,"07776735735",4));
         learners.add(new Learner("Sahil Gurung",'M',6,"07766347322",1));
@@ -64,10 +74,93 @@ public class SwimmingSchoolSystem {
         }
     }
 
+    public void autoBookLessonsForLearners() {
+        int lessonsToBook = 35;
+        for (Learner learner : learners) {
+            int bookedCount = 0;
+            for (SwimmingLesson lesson : lessons) {
+                if (bookedCount < lessonsToBook && learner.canBookLesson(lesson.getGrade()) && !lesson.isFull()) {
+                    bookLessonForLearner(learner.getId(), lesson.getId());
+                    bookedCount++;
+                }
+            }
+        }
+    }
+
+    public void autoAttendAndRateLessons() {
+        int lessonsToAttend = 25; // Number of lessons each learner should attend
+        Random random = new Random();
+
+        for (Learner learner : learners) {
+            List<Integer> bookedLessonIds = new ArrayList<>(learner.getBookedLessonIds());
+
+            // Attend up to 'lessonsToAttend' or however many lessons are booked, whichever is smaller
+            int lessonsAttended = 0;
+            for (int lessonId : bookedLessonIds) {
+                if (lessonsAttended >= lessonsToAttend) {
+                    break;
+                }
+
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    // Simulate attending the lesson
+                    learner.markLessonAsAttended(lessonId);
+                    // Give a random rating to the coach
+                    Coach coach = findCoachById(lesson.getCoachId());
+                    if (coach != null) {
+                        int rating = 1 + random.nextInt(5); // Generates a random rating from 1 to 5
+                        coach.addRating(rating);
+                    }
+
+                    // If the lesson is one level higher, increase the learner's grade
+                    if (lesson.getGrade() == learner.getGradeLevel() + 1) {
+                        learner.setGradeLevel(lesson.getGrade());
+                    }
+
+                    // Remove from booked lessons
+                    learner.removeBookedLesson(lessonId);
+                    lessonsAttended++;
+                }
+            }
+        }
+    }
+
+    public void autoCancelBookingsForLearners() {
+        int lessonsToCancel = 5;
+
+        for (Learner learner : learners) {
+            List<Integer> bookedLessons = new ArrayList<>(learner.getBookedLessonIds());
+            Collections.shuffle(bookedLessons); // Randomize the list for fair selection
+            for (int i = 0; i < lessonsToCancel && i < bookedLessons.size(); i++) {
+                cancelBooking(learner.getId(), bookedLessons.get(i));
+            }
+        }
+    }
+
+    public void autoChangeBookingsForLearners() {
+        int lessonsToChange = 5;
+
+        for (Learner learner : learners) {
+            List<Integer> bookedLessons = new ArrayList<>(learner.getBookedLessonIds());
+            Collections.shuffle(bookedLessons);
+            for (int i = 0; i < lessonsToChange && i < bookedLessons.size(); i++) {
+                Integer oldLessonId = bookedLessons.get(i);
+                SwimmingLesson oldLesson = findLessonById(oldLessonId);
+                for (SwimmingLesson newLesson : lessons) {
+                    if (!learner.getBookedLessonIds().contains(newLesson.getId()) && newLesson.getGrade() >= learner.getGradeLevel() && !newLesson.isFull()) {
+                        changeBooking(learner.getId(), oldLessonId, newLesson.getId());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{       //need to fix the skipping part ; exception handled
         // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the name is correctly waited for and captured.
-        sc.nextLine();
+        //sc.nextLine();    #####################################
         System.out.println("\nRegistration in progress...");
         // name input and validation
         System.out.println("Enter your full name (letters only): ");
@@ -87,6 +180,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter your age (4-11): ");
             age = sc.nextInt();
+            sc.nextLine(); //################################################           we use this always after nextInt() and next() to consume the line
         }
         catch(Exception e){
             System.out.println("Error! Age must be in number.");
@@ -107,6 +201,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter your swimming grade level (0-5) : ");
             gradeLevel = sc.nextInt();
+            sc.nextLine(); //######################################################
         }
         catch(Exception e){
             System.out.println("Error! Grade must be in number.");
@@ -121,7 +216,7 @@ public class SwimmingSchoolSystem {
         Learner newRegLearner = new Learner(name,gender,age,emergencyContact,gradeLevel);
         //adding newly registered learner to the list of learners
         learners.add(newRegLearner);
-        System.out.println("#-------------------NEWLY REGISTERED LEARNER DETAILS-------------------#\n"+newRegLearner.toString());
+        System.out.println("#------------NEWLY REGISTERED LEARNER DETAILS-------------#\n"+newRegLearner.toString());
 
     }
 
@@ -140,6 +235,8 @@ public class SwimmingSchoolSystem {
         System.out.println("\nHow would you like to view the available lessons ?"
                           +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
         String filterType = sc.next();
+        sc.nextLine(); //######################################
+
         if (filterType.equalsIgnoreCase("day")) {
             System.out.println("You have to enter one value:-"+"\nFor 'day': 'Monday', 'Wednesday', 'Friday', or 'Saturday'.");
         }
@@ -155,6 +252,7 @@ public class SwimmingSchoolSystem {
 
         System.out.println("\nEnter one value for " + filterType + ":-");
         String filterValue = sc.next();
+        sc.nextLine(); //#############################################
         //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
         if(!checkFilterValue(filterType,filterValue)) {
             throw new InputMismatchException("Error! Invalid value entered for " + filterType + ".");
@@ -227,6 +325,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.print("\nEnter learner ID to book a lesson for : ");
             learnerId = sc.nextInt();
+            sc.nextLine();  //#######################################
         }
         catch(Exception e){
             System.out.println("Error! Please enter an appropriate learner ID.");
@@ -241,6 +340,7 @@ public class SwimmingSchoolSystem {
             try {
                 System.out.print("\nSelect lesson ID to book : ");
                 lessonId = sc.nextInt();
+                sc.nextLine();  //#######################################
             }
             catch(Exception e){
                 System.out.println("Error! Please enter an appropriate learner ID.");
@@ -255,13 +355,11 @@ public class SwimmingSchoolSystem {
             else if (bookLessonForLearner(learnerId, lessonId)) {
                 System.out.println("Lesson booked successfully.");
             }
+            else if (!lessons.contains(lessonId)){
+                System.out.println("Error! Please enter an appropriate lesson ID.");
+            }
             else {
-                if (!lessons.contains(lessonId)) {
-                    System.out.println("Error! Please enter an appropriate lesson ID.");
-                }
-                else {
-                    System.out.println("Error! Failed to book lesson. It might be because it doesn't match lesson's grade level.");
-                }
+                System.out.println("Error! Failed to book lesson. It might be because it doesn't match lesson's grade level.");
             }
         }
     }
@@ -331,6 +429,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter learner ID: ");
             learnerId = sc.nextInt();
+            sc.nextLine();  //#######################################
         }
         catch(Exception e){
             System.out.println("Error! Please enter an appropriate learner ID.");
@@ -350,6 +449,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter ID of the lesson you want to attend: ");
             lessonId = sc.nextInt();
+            sc.nextLine();  //#######################################
         }
         catch(Exception e){
             System.out.println("Error! Please enter an appropriate lesson ID.");
@@ -364,7 +464,7 @@ public class SwimmingSchoolSystem {
         }
 
         // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the review is correctly waited for and captured.
-        sc.nextLine();
+        //sc.nextLine();      //######################################
         try{
         //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
         attendLesson(learnerId, lessonId);
@@ -420,15 +520,6 @@ public class SwimmingSchoolSystem {
             }
         } while (rating < 1 || rating > 5);
 
-        /*System.out.println("Please provide a value ranging from 1 to 5 to rate this lesson :-"+"\n1: Very dissatisfied"+"\n2: Dissatisfied"+"\n3: Okay"+"\n4: Satisfied"+"\n5: Very Satisfied"+"\nEnter a value to rate this lesson: ");
-        int rating = sc.nextInt();
-
-        // checks if the value of rating is withing range
-        if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Error! Rating must be between 1 and 5.");
-        }
-        */
-
         // records feedback for the particular lesson that was attended by storing it inside the reviews HashMaps
         lesson.recordFeedback(learnerId, review);
         // records/gives rating for the particular coach which was given for that particular lesson earlier
@@ -469,6 +560,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter learner ID: ");
             learnerId = sc.nextInt();
+            sc.nextLine();  //#######################################
         }
         catch(Exception e){
             System.out.println("Error! Please enter an appropriate learner ID.");
@@ -498,6 +590,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
             lessonId = sc.nextInt();
+            sc.nextLine();  //#######################################
         }
         catch(Exception e){
             System.out.println("Error! Please enter an appropriate lesson ID.");
@@ -517,6 +610,7 @@ public class SwimmingSchoolSystem {
 
         System.out.println("Choose what action you wish to perform by selecting appropriate number: "+"\n1. Cancel."+"\n2. Change this booking.");
         int choice = sc.nextInt();
+        sc.nextLine();  //#######################################
 
         // to Cancel
         if (choice == 1) {
@@ -531,6 +625,7 @@ public class SwimmingSchoolSystem {
 
             System.out.println("\nFrom the list of lessons given above, enter one lesson ID for booking: ");
             int newLessonId = sc.nextInt();
+            sc.nextLine();  //#######################################
 
             SwimmingLesson newLesson = findLessonById(newLessonId);
             // checks if learner enters the same lessonId that he/she wanted to change after selecting the change booking option
@@ -586,45 +681,60 @@ public class SwimmingSchoolSystem {
     }
 
     // generates report till current time. Includes details about the lessons
-    public void generateMonthlyLearnerReport() {
-        System.out.println("Monthly Learner Report:");
-        for (Learner learner : learners) {
-            System.out.println("\nLearner Name: " + learner.getName());
-            System.out.println("Learner ID: " + learner.getId());
-
-            // Shows current booked Lessons
-            System.out.println("Current Booked Lessons: " + learner.getBookedLessonIds().size());
-            for (Integer lessonId : learner.getBookedLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
-                }
-            }
-
-            // Attended Lessons and Reviews
-            System.out.println("Attended Lessons: " + learner.getAttendedLessonIds().size());
-            for (Integer lessonId : learner.getAttendedLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    String review = lesson.getReview(learner.getId());
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot() + ", Review: \"" + review + "\"");
-                }
-            }
-
-            // Canceled Lessons
-            System.out.println("Canceled Lessons: " + learner.getCanceledLessonIds().size());
-            for (Integer lessonId : learner.getCanceledLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
-                }
-            }
-            System.out.println("-------------------------------------------");
+    public void generateMonthlyLearnerReport() throws IllegalArgumentException{
+        int learnerId = 0;
+        try {
+            System.out.println("Enter learner ID: ");
+            learnerId = sc.nextInt();
+            sc.nextLine();      // to consume nextInt() value
         }
+        catch(Exception e){
+            System.out.println("Error! Please enter an appropriate learner ID.");
+            sc.next();
+            return;
+        }
+
+        Learner selectedLearner = findLearnerById(learnerId);
+        if(selectedLearner == null){
+            throw new IllegalArgumentException("Error! No learner with this ID has been registered yet.");
+        }
+
+        System.out.println("\nLearner name: "+selectedLearner.getName());
+        System.out.println("#--------------Monthly Learner Report--------------#");
+
+        // Shows current booked Lessons
+        System.out.println("Booked Lessons: " + selectedLearner.getBookedLessonIds().size());
+        for (Integer lessonId : selectedLearner.getBookedLessonIds()) {
+            SwimmingLesson lesson = findLessonById(lessonId);
+            if (lesson != null) {
+                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            }
+        }
+
+        // Attended Lessons and Reviews
+        System.out.println("\nAttended Lessons: " + selectedLearner.getAttendedLessonIds().size());
+        for (Integer lessonId : selectedLearner.getAttendedLessonIds()) {
+            SwimmingLesson lesson = findLessonById(lessonId);
+            if (lesson != null) {
+                //String review = lesson.getReview(selectedLearner.getId());
+                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            }
+        }
+
+        // Canceled Lessons
+        System.out.println("\nCanceled Lessons: " + selectedLearner.getCanceledLessonIds().size());
+        for (Integer lessonId : selectedLearner.getCanceledLessonIds()) {
+            SwimmingLesson lesson = findLessonById(lessonId);
+            if (lesson != null) {
+                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            }
+        }
+        System.out.println("-------------------------------------------");
     }
 
+
     public void generateMonthlyCoachReport() {
-        System.out.println("Monthly Coach Report:");
+        System.out.println("\n#--------------Monthly Coach Report--------------#");
         for (Coach coach : coaches) {
             // Assuming each Coach object has a method to calculate the average rating
             double averageRating = coach.calculateAverageRating();

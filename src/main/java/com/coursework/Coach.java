@@ -6,13 +6,11 @@ import java.util.List;
 public class Coach {
     private final int id;
     private String name;
-    //private List<Integer> taughtLessonIds; // List of IDs for lessons assigned to the coach. haven't used it yet
     private List<Integer> ratings; // stores list of ratings for each coach received from lessons
 
     public Coach(String name, int ID) {
         this.id = ID;
         this.name = name;
-        //this.taughtLessonIds = new ArrayList<>();   //it is intended to keep track of the IDs of lessons that a particular coach is assigned to teach.
         this.ratings = new ArrayList<>();
     }
 
@@ -24,9 +22,6 @@ public class Coach {
         return name;
     }
 
-    /*public List<Integer> getTaughtLessonIds() {
-        return new ArrayList<>(taughtLessonIds); // Return a copy to protect the internal list
-    }*/
     public List<Integer> getRatings() {
         return new ArrayList<>(ratings); // Returns a copy of the ratings for each coach, this is to protect the internal list
     }

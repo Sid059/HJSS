@@ -11,7 +11,7 @@ public class UImain {
         boolean flag = true;
 
         while (flag) {
-            System.out.println("-------------M E N U-------------");
+            System.out.println("#-------------M E N U-------------#");
             for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t0. To exit")) {
                 System.out.println(s);
             }
@@ -52,7 +52,12 @@ public class UImain {
                     }
                     break;
                 case 4: //monthly learner report
-                    sss.generateMonthlyLearnerReport();     //need to think of what to do with the recorded reviews
+                    try {
+                        sss.generateMonthlyLearnerReport();     //need to think of what to do with the recorded reviews
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 5: //monthly coach report
                     sss.generateMonthlyCoachReport();

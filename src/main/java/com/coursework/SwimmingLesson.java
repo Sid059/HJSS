@@ -81,7 +81,7 @@ public class SwimmingLesson {
         return learnerIds.contains(learnerId);
     }
 
-    //public Map<Integer, String> getAllReviews() {
+    //public Map<Integer, String> getAllReviews() {         // in case if one wants to see reviews
     //    return new HashMap<>(reviews); // Protect the internal structure
     //}
 
