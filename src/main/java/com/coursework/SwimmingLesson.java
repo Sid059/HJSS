@@ -90,7 +90,6 @@ public class SwimmingLesson {
         return reviews.getOrDefault(learnerId, "No review submitted");
     }
 
-
     public String getDetails() {
         // Construct and return a string representing the lesson's details
         return String.format("Lesson ID: %d, Grade: %d, Day: %s, Time Slot: %s", id, grade, day, timeSlot);

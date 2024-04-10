@@ -91,5 +91,4 @@ public class Learner {
     public String toString(){
         return  "Name : " +getName()+ "\nId : " +getId()+ "\nAge : " + getAge()+ "\nGender : " +getGender()+ "\nGrade : " +getGradeLevel()+ "\nContact number : " +getEmergencyContact()+"\n";
     }
-
 }

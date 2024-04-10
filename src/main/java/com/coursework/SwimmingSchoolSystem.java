@@ -13,9 +13,8 @@ public class SwimmingSchoolSystem {
         initializePreregisteredLearners();
 
         autoBookLessonsForLearners();
-        autoAttendAndRateLessons();     //need to fix this
         autoCancelBookingsForLearners();
-        autoChangeBookingsForLearners();
+        autoAttendAndRateLessons();
 
         //need to create a function that will book lessons for previous learners
         //need to create a function that will attend lessons for previous learners
@@ -24,16 +23,16 @@ public class SwimmingSchoolSystem {
 
     private void initializePreregisteredLearners(){
         learners.add(new Learner("Siddharth Rai", 'M',7,"07776735735",4));
-        learners.add(new Learner("Sahil Gurung",'M',6,"07766347322",1));
+        learners.add(new Learner("Sahil Gurung",'M',6,"07766347322",5));
         learners.add(new Learner("Sohit Rai",'M',5,"07756735455",2));
         learners.add(new Learner("Bikash Chhetri",'M',8,"07746734335",1));
         learners.add(new Learner("Rohan Chhetri",'M',8,"07746734325",2));
-        learners.add(new Learner("Amir Subba",'M',8,"07746734310",2));
+        learners.add(new Learner("Amir Subba",'M',8,"07746734310",4));
         learners.add(new Learner("Bishal Chhetri",'M',10,"07746734315",3));
-        learners.add(new Learner("Tushar Kumar Rai",'M',7,"07746734305",3));
+        learners.add(new Learner("Tushar Kumar Rai",'M',7,"07746734305",5));
         learners.add(new Learner("Shahzab Ahmad Khan",'M',7,"07746734205",3));
         learners.add(new Learner("Abdul Rahman Ampili",'M',7,"07746734215",2));
-        learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",3));
+        learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",1));
     }
     private void initializeCoaches() {
         coaches.add(new Coach("Donald",1));
@@ -42,40 +41,42 @@ public class SwimmingSchoolSystem {
         coaches.add(new Coach("Spencer",4));
         coaches.add(new Coach("Mike",5));
     }
-    private void initializeLessons() {
 
+    private void initializeLessons() {
         // Hardcoding lessons with the associated coachId
         String[] weekdays = {"Monday", "Wednesday", "Friday"};
         String[] weekend = {"Saturday"};
         String[] weekdaysTimeSlots = {"4-5pm", "5-6pm", "6-7pm"};
+        Integer[] weekdaysGrades = {1, 2, 3}; // Assigning a specific grade to each time slot for weekdays
         String[] weekendTimeSlots = {"2-3pm", "3-4pm"};
+        Integer[] weekendGrades = {4, 5}; // Assigning a specific grade to each time slot for weekends
 
         // Loop for 4 weeks
         for (int week = 1; week <= 4; week++) {
             // Weekday lessons
             for (String day : weekdays) {
-                for (String timeSlot : weekdaysTimeSlots) {
-                    for (int grade = 1; grade <= 5; grade++) {
-                        int coachId = grade; // Simplifying assumption: coach ID matches grade
-                        lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
-                    }
+                for (int i = 0; i < weekdaysTimeSlots.length; i++) {
+                    String timeSlot = weekdaysTimeSlots[i];
+                    int grade = weekdaysGrades[i];
+                    int coachId = grade; // Simplifying assumption: coach ID matches grade
+                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
                 }
             }
 
             // Weekend lessons (Saturday)
             for (String day : weekend) {
-                for (String timeSlot : weekendTimeSlots) {
-                    for (int grade = 1; grade <= 5; grade++) {
-                        int coachId = grade; // Simplifying assumption: coach ID matches grade
-                        lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
-                    }
+                for (int i = 0; i < weekendTimeSlots.length; i++) {
+                    String timeSlot = weekendTimeSlots[i];
+                    int grade = weekendGrades[i];
+                    int coachId = grade; // Simplifying assumption: coach ID matches grade
+                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
                 }
             }
         }
     }
 
     public void autoBookLessonsForLearners() {
-        int lessonsToBook = 35;
+        int lessonsToBook = 5;   // Number of lessons each learner should book
         for (Learner learner : learners) {
             int bookedCount = 0;
             for (SwimmingLesson lesson : lessons) {
@@ -88,7 +89,7 @@ public class SwimmingSchoolSystem {
     }
 
     public void autoAttendAndRateLessons() {
-        int lessonsToAttend = 25; // Number of lessons each learner should attend
+        int lessonsToAttend = 3; // Number of lessons each learner should attend
         Random random = new Random();
 
         for (Learner learner : learners) {
@@ -118,6 +119,7 @@ public class SwimmingSchoolSystem {
                     }
 
                     // Remove from booked lessons
+                    lesson.removeLearner(learner.getId());  //removes learner form the learnerIds list that each lesson has that shows learners enrolled in this lesson
                     learner.removeBookedLesson(lessonId);
                     lessonsAttended++;
                 }
@@ -126,7 +128,7 @@ public class SwimmingSchoolSystem {
     }
 
     public void autoCancelBookingsForLearners() {
-        int lessonsToCancel = 5;
+        int lessonsToCancel = 2;
 
         for (Learner learner : learners) {
             List<Integer> bookedLessons = new ArrayList<>(learner.getBookedLessonIds());
@@ -137,30 +139,9 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void autoChangeBookingsForLearners() {
-        int lessonsToChange = 5;
-
-        for (Learner learner : learners) {
-            List<Integer> bookedLessons = new ArrayList<>(learner.getBookedLessonIds());
-            Collections.shuffle(bookedLessons);
-            for (int i = 0; i < lessonsToChange && i < bookedLessons.size(); i++) {
-                Integer oldLessonId = bookedLessons.get(i);
-                SwimmingLesson oldLesson = findLessonById(oldLessonId);
-                for (SwimmingLesson newLesson : lessons) {
-                    if (!learner.getBookedLessonIds().contains(newLesson.getId()) && newLesson.getGrade() >= learner.getGradeLevel() && !newLesson.isFull()) {
-                        changeBooking(learner.getId(), oldLessonId, newLesson.getId());
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
 
     //method to register a new learner
     public void registerNewLearner() throws IllegalArgumentException{       //need to fix the skipping part ; exception handled
-        // This extra nextLine() consumes the leftover newline character from the previous input, to ensure that input for the name is correctly waited for and captured.
-        //sc.nextLine();    #####################################
         System.out.println("\nRegistration in progress...");
         // name input and validation
         System.out.println("Enter your full name (letters only): ");
@@ -180,7 +161,7 @@ public class SwimmingSchoolSystem {
         try {
             System.out.println("Enter your age (4-11): ");
             age = sc.nextInt();
-            sc.nextLine(); //################################################           we use this always after nextInt() and next() to consume the line
+            sc.nextLine(); //################################################           we use this always after nextInt() and next() to consume the line // This extra nextLine() consumes the leftover newline character from the previous input
         }
         catch(Exception e){
             System.out.println("Error! Age must be in number.");
@@ -222,15 +203,11 @@ public class SwimmingSchoolSystem {
 
     // displays lessons according to day, coach , grade
     public void runLessonDisplayInterface() throws InputMismatchException {     //exception handled
-        System.out.println("-------------------Days & Timings---------------------"
-                +"\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
-                +"\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
-                +"\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
-                +"\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
-
-        System.out.println("Below is the list of the coaches registered for this program.\n");
-        //displays the list of all registered coaches with their name and Ids
-        showAllCoaches();
+        System.out.println("#-------------------Days & Timings---------------------#"
+                + "\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
+                + "\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
+                + "\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
+                + "\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\n");
 
         System.out.println("\nHow would you like to view the available lessons ?"
                           +"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name : ");
@@ -279,7 +256,7 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void displayLessons(String filterType, String filterValue) {
+   public void displayLessons(String filterType, String filterValue) {
         System.out.println("Filtered Lessons:");
         for (SwimmingLesson lesson : lessons) {
             String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
@@ -314,13 +291,36 @@ public class SwimmingSchoolSystem {
         return null;
     }
 
+    // displays available lessons to the learner according to their current grade level and one higher level
+    public boolean displayAvailableLessonsForLearner(int learnerId) {
+        Learner selectedLearner = findLearnerById(learnerId);
+        if (selectedLearner == null) {
+            System.out.println("\nError! Learner not found. You need to register as a learner first to a book lesson.");
+            return false;
+        }
+
+        System.out.println("\n#---------------Available lessons---------------#");
+        for (SwimmingLesson lesson : lessons) {
+
+            // Checks if the lesson is not full and if the learner can book the lesson based on its grade
+            if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
+                // Calculates the number of vacancies
+                int vacancies = lesson.getMaxLearners() - lesson.getLearnerIds().size();
+                // Prints the lesson details
+                System.out.println("Lesson ID: " + lesson.getId() +
+                        ", Grade: " + lesson.getGrade() +
+                        ", Day: " + lesson.getDay() +
+                        ", Time: " + lesson.getTimeSlot() +
+                        ", Vacancies: " + vacancies);
+            }
+        }
+        return true;
+    }
+
+
     //books lesson for learner
     public void bookLesson() {                  //exception handled
         System.out.println("\nLesson Booking in progress...");
-
-        // Display all learners for selection
-        System.out.println("#---------------Available Learners------------------#");
-        showAllLearners(); //displays all registered learners
         int learnerId = 0;
         try {
             System.out.print("\nEnter learner ID to book a lesson for : ");
@@ -349,7 +349,7 @@ public class SwimmingSchoolSystem {
             }
 
             if (isLessonAlreadyBooked(learnerId, lessonId)) {
-                System.out.println("\nError! You have already an existing booking for this lesson."
+                System.out.println("\nError! You already have an existing booking for this lesson."
                                     +"\nTo rebook the same lesson, either you have to attend it or Cancel it.");
             }
             else if (bookLessonForLearner(learnerId, lessonId)) {
@@ -394,32 +394,6 @@ public class SwimmingSchoolSystem {
             }
         }
         return null; // when Learner not found
-    }
-
-    // displays available lessons to the learner according to their current grade level and one higher level
-    public boolean displayAvailableLessonsForLearner(int learnerId) {
-        Learner selectedLearner = findLearnerById(learnerId);
-        if (selectedLearner == null) {
-            System.out.println("\nError! Learner not found. You need to register as a learner first to a book lesson.");
-            return false;
-        }
-
-        System.out.println("\n#---------------Available lessons---------------#");
-        for (SwimmingLesson lesson : lessons) {
-
-            // Checks if the lesson is not full and if the learner can book the lesson based on its grade
-            if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
-                // Calculates the number of vacancies
-                int vacancies = lesson.getMaxLearners() - lesson.getLearnerIds().size();
-                // Prints the lesson details
-                System.out.println("Lesson ID: " + lesson.getId() +
-                        ", Grade: " + lesson.getGrade() +
-                        ", Day: " + lesson.getDay() +
-                        ", Time: " + lesson.getTimeSlot() +
-                        ", Vacancies: " + vacancies);
-            }
-        }
-        return true;
     }
 
     // helps attend lessons and provide reviews and ratings accordingly
@@ -681,58 +655,42 @@ public class SwimmingSchoolSystem {
     }
 
     // generates report till current time. Includes details about the lessons
-    public void generateMonthlyLearnerReport() throws IllegalArgumentException{
-        int learnerId = 0;
-        try {
-            System.out.println("Enter learner ID: ");
-            learnerId = sc.nextInt();
-            sc.nextLine();      // to consume nextInt() value
-        }
-        catch(Exception e){
-            System.out.println("Error! Please enter an appropriate learner ID.");
-            sc.next();
-            return;
-        }
-
-        Learner selectedLearner = findLearnerById(learnerId);
-        if(selectedLearner == null){
-            throw new IllegalArgumentException("Error! No learner with this ID has been registered yet.");
-        }
-
-        System.out.println("\nLearner name: "+selectedLearner.getName());
+    public void generateMonthlyLearnerReport() {
         System.out.println("#--------------Monthly Learner Report--------------#");
+        for (Learner learner : learners) {
+            System.out.println("\nLearner Name: " + learner.getName());
+            System.out.println("Learner ID: " + learner.getId());
 
-        // Shows current booked Lessons
-        System.out.println("Booked Lessons: " + selectedLearner.getBookedLessonIds().size());
-        for (Integer lessonId : selectedLearner.getBookedLessonIds()) {
-            SwimmingLesson lesson = findLessonById(lessonId);
-            if (lesson != null) {
-                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            // Shows current booked Lessons
+            System.out.println("Booked Lessons: " + learner.getBookedLessonIds().size());
+            for (Integer lessonId : learner.getBookedLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
             }
-        }
 
-        // Attended Lessons and Reviews
-        System.out.println("\nAttended Lessons: " + selectedLearner.getAttendedLessonIds().size());
-        for (Integer lessonId : selectedLearner.getAttendedLessonIds()) {
-            SwimmingLesson lesson = findLessonById(lessonId);
-            if (lesson != null) {
-                //String review = lesson.getReview(selectedLearner.getId());
-                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            // Attended Lessons and Reviews
+            System.out.println("\nAttended Lessons: " + learner.getAttendedLessonIds().size());
+            for (Integer lessonId : learner.getAttendedLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    //String review = lesson.getReview(selectedLearner.getId());
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
             }
-        }
 
-        // Canceled Lessons
-        System.out.println("\nCanceled Lessons: " + selectedLearner.getCanceledLessonIds().size());
-        for (Integer lessonId : selectedLearner.getCanceledLessonIds()) {
-            SwimmingLesson lesson = findLessonById(lessonId);
-            if (lesson != null) {
-                System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            // Canceled Lessons
+            System.out.println("\nCanceled Lessons: " + learner.getCanceledLessonIds().size());
+            for (Integer lessonId : learner.getCanceledLessonIds()) {
+                SwimmingLesson lesson = findLessonById(lessonId);
+                if (lesson != null) {
+                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                }
             }
+            System.out.println("-------------------------------------------");
         }
-        System.out.println("-------------------------------------------");
     }
-
-
     public void generateMonthlyCoachReport() {
         System.out.println("\n#--------------Monthly Coach Report--------------#");
         for (Coach coach : coaches) {

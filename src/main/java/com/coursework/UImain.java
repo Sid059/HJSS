@@ -3,6 +3,7 @@ package com.coursework;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
 public class UImain {
     public static void main(String[] args) {
         SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
@@ -12,7 +13,7 @@ public class UImain {
 
         while (flag) {
             System.out.println("#-------------M E N U-------------#");
-            for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t0. To exit")) {
+            for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t7. Show Pre-registered learners\n" + "\t0. To exit")) {
                 System.out.println(s);
             }
             int choice = 0;
@@ -31,7 +32,7 @@ public class UImain {
                 case 1: //book a swimming lesson
                     try {
                         sss.runLessonDisplayInterface();
-                        sss.bookLesson();    //#########################still need to implement a logic to book lessons for learner for one month.
+                        sss.bookLesson();
                     } catch (InputMismatchException e) {
                         System.out.println(e.getMessage());
                     }
@@ -52,12 +53,7 @@ public class UImain {
                     }
                     break;
                 case 4: //monthly learner report
-                    try {
-                        sss.generateMonthlyLearnerReport();     //need to think of what to do with the recorded reviews
-                    }
-                    catch(IllegalArgumentException e){
-                        System.out.println(e.getMessage());
-                    }
+                    sss.generateMonthlyLearnerReport();
                     break;
                 case 5: //monthly coach report
                     sss.generateMonthlyCoachReport();
@@ -68,6 +64,9 @@ public class UImain {
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
+                    break;
+                case 7: //view all learners
+                    sss.showAllLearners();
                     break;
                 case 0:
                     flag = false;
