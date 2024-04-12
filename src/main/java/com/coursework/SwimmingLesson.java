@@ -77,7 +77,7 @@ public class SwimmingLesson {
     }
 
     // records feedback and rating
-    public void recordFeedback(int learnerId, String review) {
+    public void giveFeedback(int learnerId, String review) {
         reviews.put(learnerId, review);
     }
 

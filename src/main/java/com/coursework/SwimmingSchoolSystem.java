@@ -138,7 +138,7 @@ public class SwimmingSchoolSystem {
             System.out.println("Enter your choice:");
             choice = sc.nextInt();
             sc.nextLine();
-            //depending on the choice, action is decided whether to continue registration  or to go back
+            //function that helps in filling registration details for learner
             fillRegistrationDetailsForLearner(choice);
         }
         catch (IllegalArgumentException e){
@@ -214,14 +214,13 @@ public class SwimmingSchoolSystem {
         }
         if(choice == 2){
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            return;
         }
         else{
             throw new IllegalArgumentException("\033[31mError! You didn't select an appropriate action.\033[0m");
         }
     }
 
-    // displays lessons according to day, coach , grade
+    // displays lessons
     public void runLessonDisplayInterface() throws IllegalArgumentException {     //exception handled
         System.out.println("\033[32m#-------------------Days & Timings---------------------#"
                 + "\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
@@ -249,7 +248,7 @@ public class SwimmingSchoolSystem {
         sc.nextLine();
         //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
         if(!checkFilterValue(filterType,filterValue)) {
-            throw new InputMismatchException("\033[31mError! Invalid value entered for " + filterType + ".\033[0m");
+            throw new IllegalArgumentException("\033[31mError! Invalid value entered for " + filterType + ".\033[0m");
         }
         //displays lessons according to the filter
         displayLessons(filterType, filterValue);
@@ -272,11 +271,22 @@ public class SwimmingSchoolSystem {
         }
     }
 
-   public void displayLessons(String filterType, String filterValue) {
-        System.out.println("\033[32mFiltered Lessons:\033[0m");
+    //displays lessons according to day, coach, grade
+    public void displayLessons(String filterType, String filterValue) {
+        System.out.println("\033[32mFiltering Lessons...\033[0m");
+        if(filterType.equalsIgnoreCase("day")){
+            System.out.println("\033[32mLessons for '"+filterValue.toLowerCase()+"'...\033[0m");
+        }
+        else if (filterType.equalsIgnoreCase("grade")) {
+            System.out.println("\033[32mLessons for 'Grade "+filterValue.toLowerCase()+"' learners...\033[0m");
+        }
+        else{
+            System.out.println("\033[32mLessons taught by '"+filterValue.toLowerCase()+"'...\033[0m");
+        }
+
         for (SwimmingLesson lesson : lessons) {
             String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
-            boolean displayLesson = false;
+            boolean displayLesson;
             switch (filterType.toLowerCase()) {
                 case "day":
                     displayLesson = lesson.getDay().equalsIgnoreCase(filterValue);
@@ -362,11 +372,45 @@ public class SwimmingSchoolSystem {
         }
         if (bookLessonForLearner(learnerId, lessonId)) {
             System.out.println("\033[32mLesson booked successfully.\033[0m");
+            //choiceToBookMoreLesson();
         }
         else {
             System.out.println("\033[31mError! Failed to book lesson. It might be because it doesn't match lesson's grade level.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
+
+/*    public void choiceToBookMoreLesson(){
+        int choice;
+        try {
+            System.out.println("Select one action:" + "\n1. Book more lessons." + "\n2. Go back to main menu.");
+            System.out.println("Enter your choice:");
+            choice = sc.nextInt();
+            sc.nextLine();
+            bookMoreLesson(choice);
+        }
+        catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
+        }
+        catch(Exception e){
+            System.out.println("\033[31mError! You didn't enter a number.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
+            sc.nextLine();
+        }
+    }
+
+    public void bookMoreLesson(int choice) throws IllegalArgumentException{
+        if(choice == 1){
+            bookLesson();
+        }
+        if(choice == 2) {
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
+        }
+        else{
+            throw new IllegalArgumentException("\033[31mError! You didn't select an appropriate action.\033[0m");
+        }
+    }*/
 
     // checks if the learnerId is associated with the lessonId in a way that indicates booking but not attendance.
     private boolean isLessonAlreadyBooked(Learner learner, SwimmingLesson lesson) {
@@ -400,6 +444,7 @@ public class SwimmingSchoolSystem {
         }
         catch(Exception e){
             System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from scanner
             return;
         }
@@ -428,6 +473,7 @@ public class SwimmingSchoolSystem {
         }
         catch(Exception e){
             System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from scanner
             return;
         }
@@ -437,13 +483,13 @@ public class SwimmingSchoolSystem {
         if (lesson == null) {
             throw new IllegalArgumentException("\033[31mError! The lesson you're trying to attend does not exist.\033[0m");
         }
-
         try{
         //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
         attendLesson(learner, lesson);
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
 
@@ -460,13 +506,17 @@ public class SwimmingSchoolSystem {
         if (!lesson.isLearnerEnrolled(learner.getId())) {
             throw new IllegalArgumentException("\033[31mError! Learner not enrolled in this lesson.\033[0m");
         }
-        System.out.println("\033[32mCongratulations on completing 'Grade "+lesson.getGrade()+"' lesson successfully.\033[0m");
+        System.out.println("\033[32mCongratulations on completing 'Grade " + lesson.getGrade() + "' lesson successfully.\033[0m");
 
         // checks if the attended lesson's grade is exactly one level higher than the learner's current grade, if true updates learner's grade to a level higher
         if (lesson.getGrade() == learner.getGradeLevel() + 1) {
             learner.updateGradeLevel(lesson.getGrade());
         }
+        recordRatingAndFeedback(learner,lesson);
+    }
 
+    //function created to record feedback
+    public void recordRatingAndFeedback(Learner learner, SwimmingLesson lesson){
         System.out.println("\n\033[32mRecording feedback...\033[0m");
         System.out.println("Please provide a review about the lesson in less than 50 words:");
         String review = sc.nextLine();
@@ -485,7 +535,7 @@ public class SwimmingSchoolSystem {
         } while (rating < 1 || rating > 5);
 
         // records feedback for the particular lesson that was attended by storing it inside the reviews HashMaps
-        lesson.recordFeedback(learner.getId(), review);
+        lesson.giveFeedback(learner.getId(), review);
         // records/gives rating for the particular coach which was given for that particular lesson earlier
         giveCoachRating(lesson.getCoachId(),rating);
 
@@ -495,6 +545,7 @@ public class SwimmingSchoolSystem {
         // stores the lessonId of the lesson that the learner has recently attended in a list, to use it for learner report
         learner.markLessonAsAttended(lesson.getId());
         System.out.println("\033[32mFeedback recorded successfully.\033[0m");
+        System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
 
