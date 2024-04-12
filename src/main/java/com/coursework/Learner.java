@@ -31,32 +31,37 @@ public class Learner {
         this.gradeLevel = newGrade;
     }
 
-    //Getters
-    public String getName() {
-        return name;
-    }
-    public char getGender() {
-        return gender;
-    }
-    public int getAge() {
-        return age;
-    }
-    public String getEmergencyContact() {
-        return emergencyContact;
-    }
-    public int getGradeLevel() { return gradeLevel; }
-    public int getId() {
-        return id;
-    }
     public Set<Integer> getBookedLessonIds() {      //returns a list of lessons that a learner has booked currently which stays there unless it is attended
         return new HashSet<>(bookedLessonIds);
     }
     public Set<Integer> getAttendedLessonIds() {     //returns a list of lessons that a learner has successfully attended
         return new HashSet<>(attendedLessonIds);
     }
+
     public Set<Integer> getCanceledLessonIds() {     //returns a list of lesson that a learner has cancelled
         return new HashSet<>(canceledLessonIds);
     }
+
+    //Getters
+    public String getName() {
+        return name;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
+
+    public int getGradeLevel() { return gradeLevel; }
+
+    public int getId() { return id; }
 
     // adds the lessonId's of the lesson booked by the learner in a separate list ,i.e, bookedLessonIds which keeps record of all the bookings that learner has not attended yet
     public void keepRecordOfBookedLessons(int lessonId) {
@@ -84,7 +89,7 @@ public class Learner {
     // updates grade level of the learner if learner attends a lesson that is one level higher than it's current grade
     public void updateGradeLevel(int newGradeLevel) {
         this.gradeLevel = newGradeLevel;
-        System.out.println(name + " has now advanced to grade level " + gradeLevel+".");
+        System.out.println("\033[32m'"+ name + "' has now advanced to grade level " + gradeLevel+".\033[0m");
     }
 
     //displaying learner details

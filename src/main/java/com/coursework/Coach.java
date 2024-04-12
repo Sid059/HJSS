@@ -18,6 +18,7 @@ public class Coach {
     public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
@@ -42,6 +43,7 @@ public class Coach {
         }
         return sum / ratings.size();
     }
+
     public String toString(){
         return  "Name: " +getName()+ ", Id: " +getId();
     }

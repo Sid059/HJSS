@@ -32,22 +32,27 @@ public class SwimmingLesson {
     public int getId() {
         return id;
     }
+
     public int getGrade() { return grade; }
-    public String getDay() {
-        return day;
-    }
+
+    public String getDay() { return day; }
+
     public String getTimeSlot() {
         return timeSlot;
     }
+
     public int getCoachId() {
         return coachId;
     }
+
     public int getWeek(){ return week; }        //haven't used this one yet
+
     public int getMaxLearners(){ return maxLearners; }
 
     public Set<Integer> getLearnerIds() {   //need to check where it's being used####################################
         return new HashSet<>(learnerIds); // Protect the internal structure
     }
+
     public boolean isFull() {
         return learnerIds.size() >= maxLearners;
     }
@@ -55,7 +60,7 @@ public class SwimmingLesson {
     // helps enroll learner for a lesson ,i.e book a lesson
     public boolean addLearner(int learnerId) {
         if (isFull()) {
-            System.out.println("Error! Cannot add learner to lesson " + id + ": Lesson is full.");
+            System.out.println("\033[31mError! Cannot add learner to lesson " + id + ": Lesson is full.\033[0m");
             return false;
         }
         //learnerIds is a set so there won't be any duplicate bookings for a particular lesson by a particular learner
@@ -90,7 +95,7 @@ public class SwimmingLesson {
         return reviews.getOrDefault(learnerId, "No review submitted");
     }
 
-    public String getDetails() {
+    public String getLessonDetails() {
         // Construct and return a string representing the lesson's details
         return String.format("Lesson ID: %d, Grade: %d, Day: %s, Time Slot: %s", id, grade, day, timeSlot);
     }

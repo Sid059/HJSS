@@ -1,6 +1,5 @@
 package com.coursework;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,8 +11,8 @@ public class UImain {
         boolean flag = true;
 
         while (flag) {
-            System.out.println("#-------------M E N U-------------#");
-            for (String s : List.of("\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t7. Show Pre-registered learners\n" + "\t0. To exit")) {
+            System.out.println("\n\033[32m#-------------M E N U-------------#\033[0m");
+            for (String s : List.of("\033[32m\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t7. Show Pre-registered learners\n" + "\t0. To exit\033[0m")) {
                 System.out.println(s);
             }
             int choice = 0;
@@ -24,7 +23,7 @@ public class UImain {
                     choice = sc.nextInt();
                     counter = 1;
                 } catch (Exception e) {
-                    System.out.println("Error! Enter an appropriate number.");
+                    System.out.println("\033[31mError! Enter an appropriate number.\033[0m");
                     sc.next();
                 }
             }
@@ -33,8 +32,9 @@ public class UImain {
                     try {
                         sss.runLessonDisplayInterface();
                         sss.bookLesson();
-                    } catch (InputMismatchException e) {
+                    } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
+                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }
                     break;
                 case 2: //change/cancel a booking
@@ -42,14 +42,16 @@ public class UImain {
                         sss.changeOrCancelBooking();
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
+                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }
                     break;
                 case 3: //attend a swimming lesson
                     try {
                         sss.attendLessonAndProvideFeedback();
                     }
-                    catch (IllegalArgumentException e){
+                    catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
+                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }
                     break;
                 case 4: //monthly learner report
@@ -63,6 +65,7 @@ public class UImain {
                         sss.registerNewLearner();
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
+                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }
                     break;
                 case 7: //view all learners
@@ -70,10 +73,10 @@ public class UImain {
                     break;
                 case 0:
                     flag = false;
-                    System.out.println("Exiting system...");
+                    System.out.println("\033[32mExiting system...\033[0m");
                     break;
                 default:
-                    System.out.println("Please select an appropriate action!");
+                    System.out.println("\033[31mError! Please select an appropriate action.\033[0m");
             }
         }
     }
