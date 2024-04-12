@@ -130,21 +130,29 @@ public class SwimmingSchoolSystem {
     }
 
     //method to register a new learner
-    public void registerNewLearner() throws IllegalArgumentException {       // exception handled
-        int choice = 0;
+    public void registerNewLearner() {       // exception handled
+        int choice;
         try {
             System.out.println("\033[32mSelect one action:\033[0m");
-            System.out.println("\033[32m1. Continue registration."+"\n2. Go back to main menu.\033[0m");
+            System.out.println("\033[32m1. Continue registration." + "\n2. Go back to main menu.\033[0m");
             System.out.println("Enter your choice:");
             choice = sc.nextInt();
             sc.nextLine();
+            //depending on the choice, action is decided whether to continue registration  or to go back
+            fillRegistrationDetailsForLearner(choice);
         }
-        catch(Exception e){
-            System.out.println("\033[31mError! You didn't select an appropriate action.\033[0m");
+        catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
+        }
+        catch (Exception e) {
+            System.out.println("\033[31mError! You didn't enter a number.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();
-            return;
         }
+    }
 
+    public void fillRegistrationDetailsForLearner(int choice) throws IllegalArgumentException {
         if (choice == 1) {
             System.out.println("\033[32m\nRegistration in progress...\033[0m");
             // name input and validation
@@ -164,19 +172,20 @@ public class SwimmingSchoolSystem {
             // age input and validation
             int age;
             try {
-                System.out.println("Enter your age (4-11): ");
+                System.out.println("Enter your age (4-11):");
                 age = sc.nextInt();
                 sc.nextLine(); //we use this always after nextInt() and next() to consume the line. This extra nextLine() consumes the leftover newline character from the previous input
             } catch (Exception e) {
                 System.out.println("\033[31mError! Age must be in number.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 sc.nextLine();      // to consume the wrong input from the scanner
-                return;
+                return;     //need this return here because there are statements below it, if return is not present then those statements won't get executed.
             }
             if (age < 4 || age > 11) {
-                throw new IllegalArgumentException("\033[31mError! You cannot register as a learner if your age isn't between 4 and 11.\033[0m");
+                throw new IllegalArgumentException("\033[31mSorry! You cannot register as a learner if your age isn't between 4 and 11.\033[0m");
             }
             // emergency contact input and validation
-            System.out.println("Enter your 10 digit contact number: ");
+            System.out.println("Enter your 10 digit contact number:");
             String emergencyContact = sc.next();
             sc.nextLine();
             if (emergencyContact.length() != 10 || !emergencyContact.matches("\\d+")) {      //\\d to check if the contact number contains digits 0-9 , + because there can be more than one occurrence of digits
@@ -185,11 +194,12 @@ public class SwimmingSchoolSystem {
             // grade input and validation
             int gradeLevel;
             try {
-                System.out.println("Enter your swimming grade level (0-5) : ");
+                System.out.println("Enter your swimming grade level (0-5):");
                 gradeLevel = sc.nextInt();
                 sc.nextLine();
             } catch (Exception e) {
                 System.out.println("\033[31mError! Grade must be in number.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 sc.nextLine();
                 return;
             }
@@ -206,8 +216,10 @@ public class SwimmingSchoolSystem {
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
             return;
         }
+        else{
+            throw new IllegalArgumentException("\033[31mError! You didn't select an appropriate action.\033[0m");
+        }
     }
-
 
     // displays lessons according to day, coach , grade
     public void runLessonDisplayInterface() throws IllegalArgumentException {     //exception handled
@@ -287,7 +299,8 @@ public class SwimmingSchoolSystem {
 
     // displays available lessons to the learner according to their current grade level and one higher level
     public void displayAvailableLessonsForLearner(Learner selectedLearner) {
-        System.out.println("\n\033[32m#-------------------------Available lessons------------------------#\033[0m");
+        System.out.println("\n\033[32mGenerating available lessons...\033[0m");
+        System.out.println("\033[32m#------------------------Available lessons------------------------#\033[0m");
         for (SwimmingLesson lesson : lessons) {
             // Checks if the lesson is not full and if the learner can book the lesson based on its grade
             if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
@@ -308,12 +321,13 @@ public class SwimmingSchoolSystem {
         System.out.println("\n\033[32mLesson Booking in progress...\033[0m");
         int learnerId;
         try {
-            System.out.print("Enter learner ID:");
+            System.out.println("Enter learner ID:");
             learnerId = sc.nextInt();
             sc.nextLine();
         }
         catch(Exception e){
             System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from scanner
             return;
         }
@@ -327,12 +341,13 @@ public class SwimmingSchoolSystem {
 
         int lessonId;
         try {
-            System.out.print("\nEnter lesson ID:");
+            System.out.println("\nEnter lesson ID:");
             lessonId = sc.nextInt();
             sc.nextLine();
         }
         catch(Exception e){
             System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from the scanner
             return;
         }

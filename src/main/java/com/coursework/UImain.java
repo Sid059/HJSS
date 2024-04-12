@@ -61,12 +61,7 @@ public class UImain {
                     sss.generateMonthlyCoachReport();
                     break;
                 case 6: //register a new learner
-                    try {
-                        sss.registerNewLearner();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
-                    }
+                    sss.registerNewLearner();
                     break;
                 case 7: //view all learners
                     sss.showAllLearners();
