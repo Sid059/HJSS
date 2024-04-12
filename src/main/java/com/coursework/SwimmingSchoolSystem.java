@@ -560,27 +560,27 @@ public class SwimmingSchoolSystem {
     }
 
     // helps in cancelling a booked lesson, also helps in changing the booking,i.e, booking another lesson in place of previous lesson
-    public void changeOrCancelBooking() throws IllegalArgumentException{        //exception handled
+    public void changeOrCancelBooking() throws IllegalArgumentException {        //exception handled
         System.out.println("\n\033[32mChanging or cancelling a booking...\033[0m");
         int learnerId;
         try {
             System.out.println("Enter learner ID:");
             learnerId = sc.nextInt();
             sc.nextLine();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from scanner
             return;
         }
 
         Learner learner = findLearnerById(learnerId);
         //checks if the learnerId entered is a registered one, if so it should be present inside the learners list
-        if(learner == null){
+        if (learner == null) {
             throw new IllegalArgumentException("\033[31mError! No learner with this ID has been registered yet.\033[0m");
         }
         //checks if the list that stores the bookings for each learner is empty
-        if(learner.getBookedLessonIds().isEmpty()){
+        if (learner.getBookedLessonIds().isEmpty()) {
             throw new IllegalArgumentException("\033[31mOops! It seems you don't have any bookings to cancel/change.\033[0m");
         }
 
@@ -596,43 +596,53 @@ public class SwimmingSchoolSystem {
             System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
             lessonId = sc.nextInt();
             sc.nextLine();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();      // to consume the wrong input from scanner
             return;
         }
 
         SwimmingLesson lesson = findLessonById(lessonId);
         // checks if the lesson entered by the user is a lesson that has already been created and that's present in the lessons list
-        if(lesson == null){
+        if (lesson == null) {
             throw new IllegalArgumentException("\033[31mError! The lesson you're trying to cancel/change does not exist.\033[0m");
         }
         // checks if the lesson entered by the user is the one that user has actually booked and not any other available ID's
-        if(!learner.getBookedLessonIds().contains(lessonId)){
+        if (!learner.getBookedLessonIds().contains(lessonId)) {
             throw new IllegalArgumentException("\033[31mError! You cannot change/cancel a lesson that you haven't booked yet.\033[0m");
         }
 
         int choice;
         try {
-            System.out.println("\033[32mChoose what action you wish to perform by selecting appropriate number:" + "\n1. Cancel." + "\n2. Change this booking.\033[0m");
+            System.out.println("\033[32mSelect one action:" + "\n1. Cancel." + "\n2. Change this booking.\033[0m");
+            System.out.println("Enter your choice:");
             choice = sc.nextInt();
             sc.nextLine();
+            chooseToChangeOrCancel(choice,lesson,learner);
         }
-        catch(Exception e){
+        catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
+        }
+        catch (Exception e) {
             System.out.println("\033[31mError! You must enter a number.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
             sc.nextLine();
-            return;
         }
+    }
 
+    //based on choice action is performed whether to change or cancel
+    public void chooseToChangeOrCancel(int choice, SwimmingLesson lesson, Learner learner) throws IllegalArgumentException{
         // to Cancel
         if (choice == 1) {
-            if (cancelBooking(learnerId, lessonId)) {
+            if (cancelBooking(learner.getId(), lesson.getId())) {
                 System.out.println("\033[32mBooking cancelled successfully.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
             }
         }
         // to change
-        else if (choice == 2) {
+        if (choice == 2) {
             //displays list of available lessons according to learners grade level
             displayAvailableLessonsForLearner(learner);
 
@@ -644,6 +654,7 @@ public class SwimmingSchoolSystem {
             }
             catch(Exception e){
                 System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 sc.nextLine();
                 return;
             }
@@ -654,34 +665,40 @@ public class SwimmingSchoolSystem {
                 throw new IllegalArgumentException("\033[31mError! The lesson you're trying to book to does not exist.\033[0m");
             }
             // checks if learner enters the same lessonId that he/she wanted to change after selecting the change booking option
-            if(lessonId == newLessonId) {
-                System.out.println("\033[31mError! Attempting to change to the same lesson, i.e, LessonID: " + lessonId + ". No action taken.\033[0m");
+            if(lesson.getId() == newLessonId) {
+                System.out.println("\033[31mError! Attempting to change to the same lesson, i.e, LessonID: " + lesson.getId() + ". No action taken.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 return;
             }
             if(learner.getBookedLessonIds().contains(newLessonId))
             {
-                throw new IllegalArgumentException("\033[31mError! You already have an existing booking for the requested lesson, i.e, LessonID: " + lessonId + ". No action taken.\033[0m");
+                throw new IllegalArgumentException("\033[31mError! You already have an existing booking for the requested lesson, i.e, LessonID: " + lesson.getId() + ". No action taken.\033[0m");
             }
             // checks if learners grade is appropriate for the new lesson
             if(!learner.canBookLesson(newLesson.getGrade())){
                 System.out.println("\033[31mError! The chosen lesson's grade is not appropriate for the learner's current grade."
                                     +"\nTry it again with lessons of same grade as learner's.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 return;
             }
             // Check if the new lesson can accommodate the learner
             if (newLesson.isFull()) {
                 System.out.println("Error! The chosen lesson is at full capacity.");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
                 return;
             }
-            if (changeBooking(learnerId, lessonId, newLessonId)) {
+            if (changeBooking(learner.getId(), lesson.getId(), newLessonId)) {
                 System.out.println("\033[32mBooking changed successfully.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
             }
             else {
                 System.out.println("\033[31mError! Failed to change booking.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
             }
         }
-        else {
+         if(choice!= 1 && choice!=2){
             System.out.println("\033[31mError! Invalid choice.\033[0m");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
 
