@@ -12,18 +12,18 @@ public class SwimmingLesson {
     private String day;
     private String timeSlot;
     private int coachId;
-    private int week;       //need to check into this variable, whether to use ot or not
+    //private int week;       //need to check into this variable, whether to use ot or not
     private Set<Integer> learnerIds;    // stores IDs of the learners that are for a particular lesson. this will be created for each instance of lesson.
     private final int maxLearners = 4;  // max capacity of learners that each lesson can hold
     private Map<Integer, String> reviews; // Learner ID to review text
 
-    public SwimmingLesson(int grade, String day, String timeSlot, int coachId, int week) {
+    public SwimmingLesson(int grade, String day, String timeSlot, int coachId) {
         this.id = nextId++;
         this.grade = grade;
         this.day = day;
         this.timeSlot = timeSlot;
         this.coachId = coachId;
-        this.week = week;
+        //this.week = week;
         this.learnerIds = new HashSet<>();
         this.reviews = new HashMap<>();
     }
@@ -45,7 +45,7 @@ public class SwimmingLesson {
         return coachId;
     }
 
-    public int getWeek(){ return week; }        //haven't used this one yet
+    //public int getWeek(){ return week; }        //haven't used this one yet
 
     public int getMaxLearners(){ return maxLearners; }
 

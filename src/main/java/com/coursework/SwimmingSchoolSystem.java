@@ -55,7 +55,7 @@ public class SwimmingSchoolSystem {
                     String timeSlot = weekdaysTimeSlots[i];
                     int grade = weekdaysGrades[i];
                     int coachId = grade; // Simplifying assumption: coach ID matches grade
-                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
+                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId));
                 }
             }
             // Weekend lessons (Saturday)
@@ -64,7 +64,7 @@ public class SwimmingSchoolSystem {
                     String timeSlot = weekendTimeSlots[i];
                     int grade = weekendGrades[i];
                     int coachId = grade; // Simplifying assumption: coach ID matches grade
-                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId, week));
+                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId));
                 }
             }
         }
