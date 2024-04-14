@@ -1,6 +1,5 @@
 package com.coursework;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -62,7 +61,13 @@ public class UImain {
                     sss.generateMonthlyCoachReport();
                     break;
                 case 6: //register a new learner
-                    sss.registerNewLearner();
+                    try {
+                        sss.registerNewLearner();
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                        System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                    }
                     break;
                 case 7: //view all learners
                     sss.showAllLearners();

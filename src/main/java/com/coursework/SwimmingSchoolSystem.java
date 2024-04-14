@@ -70,7 +70,8 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void autoBookLessonsForLearners() {
+    //assuming this is for the month of march
+    private void autoBookLessonsForLearners() {
         int lessonsToBook = 5;   // Number of lessons each learner should book
         for (Learner learner : learners) {
             int bookedCount = 0;
@@ -83,7 +84,7 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void autoAttendAndRateLessons() {
+    private void autoAttendAndRateLessons() {
         int lessonsToAttend = 3; // Number of lessons each learner should attend
         Random random = new Random();
 
@@ -118,8 +119,8 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void autoCancelBookingsForLearners() {
-        int lessonsToCancel = 2;
+    private void autoCancelBookingsForLearners() {
+        int lessonsToCancel = 2;    //number of lessons each learner should cancel
         for (Learner learner : learners) {
             List<Integer> bookedLessons = new ArrayList<>(learner.getBookedLessonIds());
             Collections.shuffle(bookedLessons); // Randomize the list for fair selection
@@ -129,31 +130,29 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    //method to register a new learner
-    public void registerNewLearner() {       // exception handled
-        int choice;
+    private int getUserChoiceOfAction() {
+        System.out.println("\033[32mSelect one action:\033[0m");
+        System.out.println("\033[32m1. Continue with action." + "\n2. Go back to main menu.\033[0m");
+        System.out.println("Enter your choice:");
         try {
-            System.out.println("\033[32mSelect one action:\033[0m");
-            System.out.println("\033[32m1. Continue registration." + "\n2. Go back to main menu.\033[0m");
-            System.out.println("Enter your choice:");
-            choice = sc.nextInt();
+            int choiceOfAction = sc.nextInt();
             sc.nextLine();
-            //function that helps in filling registration details for learner
-            fillRegistrationDetailsForLearner(choice);
-        }
-        catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-        }
-        catch (Exception e) {
+            if (choiceOfAction != 1 && choiceOfAction != 2) {
+                System.out.println("\033[31mError! Invalid choice. Please select 1 or 2.\033[0m");
+                return getUserChoiceOfAction(); // Recursive call if invalid input
+            }
+            return choiceOfAction;
+        } catch (Exception e) {
             System.out.println("\033[31mError! You didn't enter a number.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();
+            sc.nextLine(); // Clear the buffer
+            return getUserChoiceOfAction(); // Recursive call if exception thrown
         }
     }
 
-    public void fillRegistrationDetailsForLearner(int choice) throws IllegalArgumentException {
-        if (choice == 1) {
+    //method to register a new learner
+    public void registerNewLearner() throws IllegalArgumentException{       // exception handled
+        int choiceOfAction = getUserChoiceOfAction();
+        if (choiceOfAction == 1) {
             System.out.println("\033[32m\nRegistration in progress...\033[0m");
             // name input and validation
             System.out.println("Enter your full name (letters only): ");
@@ -211,12 +210,10 @@ public class SwimmingSchoolSystem {
             //adding newly registered learner to the list of learners
             learners.add(newRegLearner);
             System.out.println("\033[32m#------------NEWLY REGISTERED LEARNER DETAILS-------------#\033[0m\n" + newRegLearner.toString());
-        }
-        if(choice == 2){
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
-        else{
-            throw new IllegalArgumentException("\033[31mError! You didn't select an appropriate action.\033[0m");
+        if(choiceOfAction == 2){
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
 
@@ -228,26 +225,23 @@ public class SwimmingSchoolSystem {
                 + "\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
                 + "\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\033[0m");
 
-        System.out.println("\nHow would you like to view the available lessons ?"+"\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name:");
+        System.out.println("\nHow would you like to view the available lessons ?" + "\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name:");
         String filterType = sc.next();
         sc.nextLine();
         if (filterType.equalsIgnoreCase("day")) {
-            System.out.println("You have to enter one value:"+"\nFor 'day': 'Monday', 'Wednesday', 'Friday', or 'Saturday'.");
-        }
-        else if (filterType.equalsIgnoreCase("grade")) {
-            System.out.println("You have to enter one value:"+"\nFor 'grade': '1'( for learners at level 0 & 1), '2', '3', '4', or '5'.");
-        }
-        else if (filterType.equalsIgnoreCase("coach")) {
-            System.out.println("You have to enter one value:"+"\nFor 'coach': 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
-        }
-        else{
+            System.out.println("You have to enter one value:" + "\nFor 'day': 'Monday', 'Wednesday', 'Friday', or 'Saturday'.");
+        } else if (filterType.equalsIgnoreCase("grade")) {
+            System.out.println("You have to enter one value:" + "\nFor 'grade': '1'( for learners at level 0 & 1), '2', '3', '4', or '5'.");
+        } else if (filterType.equalsIgnoreCase("coach")) {
+            System.out.println("You have to enter one value:" + "\nFor 'coach': 'Donald', 'Ralph', 'Smith', 'Spencer', or 'Mike'.");
+        } else {
             throw new IllegalArgumentException("\033[31mError! Invalid filter type. Please type 'day', 'grade', or 'coach' to view lessons accordingly.\033[0m");
         }
         System.out.println("Enter one value for '" + filterType + "':");
         String filterValue = sc.next();
         sc.nextLine();
         //checks if the value passed matches with what it's supposed to be for eg, Monday, Wednesday etc.
-        if(!checkFilterValue(filterType,filterValue)) {
+        if (!checkFilterValue(filterType, filterValue)) {
             throw new IllegalArgumentException("\033[31mError! Invalid value entered for " + filterType + ".\033[0m");
         }
         //displays lessons according to the filter
@@ -258,17 +252,12 @@ public class SwimmingSchoolSystem {
     public boolean checkFilterValue(String filterType, String value) {
         // converting the value to lower case for a case-insensitive comparison
         String lowerCaseValue = value.toLowerCase();
-        switch (filterType.toLowerCase()) {
-            case "day":
-                return Arrays.asList("monday", "wednesday", "friday", "saturday").contains(lowerCaseValue);
-            case "grade":
-                // Grades are numeric and case-insensitive by nature
-                return Arrays.asList("1", "2", "3", "4", "5").contains(value);
-            case "coach":
-                return Arrays.asList("donald", "ralph", "smith", "spencer", "mike").contains(lowerCaseValue);
-            default:
-                return false;       // when invalid filter type
-        }
+        return switch (filterType.toLowerCase()) {
+            case "day" -> Arrays.asList("monday", "wednesday", "friday", "saturday").contains(lowerCaseValue);
+            case "grade" -> Arrays.asList("1", "2", "3", "4", "5").contains(value); // Grades are numeric and case-insensitive by nature
+            case "coach" -> Arrays.asList("donald", "ralph", "smith", "spencer", "mike").contains(lowerCaseValue);
+            default -> false;       // when invalid filter type
+        };
     }
 
     //displays lessons according to day, coach, grade
@@ -314,6 +303,7 @@ public class SwimmingSchoolSystem {
         for (SwimmingLesson lesson : lessons) {
             // Checks if the lesson is not full and if the learner can book the lesson based on its grade
             if (!lesson.isFull() && selectedLearner.canBookLesson(lesson.getGrade())) {
+                String coachName = findCoachById(lesson.getCoachId()).getName(); //fetches the name of the coach
                 // Calculates the number of vacancies
                 int vacancies = lesson.getMaxLearners() - lesson.getLearnerIds().size();
                 // Prints the lesson details
@@ -321,6 +311,7 @@ public class SwimmingSchoolSystem {
                         ", Grade: " + lesson.getGrade() +
                         ", Day: " + lesson.getDay() +
                         ", Time: " + lesson.getTimeSlot() +
+                        ", Coach: " + coachName +
                         ", Vacancies: " + vacancies);
             }
         }
@@ -328,89 +319,62 @@ public class SwimmingSchoolSystem {
 
     //books lesson for learner
     public void bookLesson() throws IllegalArgumentException {                  //exception handled
-        System.out.println("\n\033[32mLesson Booking in progress...\033[0m");
-        int learnerId;
-        try {
-            System.out.println("Enter learner ID:");
-            learnerId = sc.nextInt();
-            sc.nextLine();
-        }
-        catch(Exception e){
-            System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from scanner
-            return;
-        }
+        System.out.println();   //extra line
+        int choiceOfAction = getUserChoiceOfAction();
+        if (choiceOfAction == 1) {
+            System.out.println("\n\033[32mLesson Booking in progress...\033[0m");
+            int learnerId;
+            try {
+                System.out.println("Enter learner ID:");
+                learnerId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from scanner
+                return;
+            }
 
-        Learner selectedLearner = findLearnerById(learnerId);
-        if (selectedLearner == null) {
-            throw new IllegalArgumentException("\033[31mError! Learner not found. You need to register as a learner first to a book lesson.\033[0m");
-        }
-        //shows available lessons according to learners grade level also checks if the learner is registered or not before booking and showing available lessons
-        displayAvailableLessonsForLearner(selectedLearner);
+            Learner selectedLearner = findLearnerById(learnerId);
+            if (selectedLearner == null) {
+                throw new IllegalArgumentException("\033[31mError! Learner not found. You need to register as a learner first to a book lesson.\033[0m");
+            }
+            //shows available lessons according to learners grade level also checks if the learner is registered or not before booking and showing available lessons
+            displayAvailableLessonsForLearner(selectedLearner);
 
-        int lessonId;
-        try {
-            System.out.println("\nEnter lesson ID:");
-            lessonId = sc.nextInt();
-            sc.nextLine();
-        }
-        catch(Exception e){
-            System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from the scanner
-            return;
-        }
+            int lessonId;
+            try {
+                System.out.println("\nEnter the ID of the lesson you want to book:");
+                lessonId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from the scanner
+                return;
+            }
 
-        SwimmingLesson lesson = findLessonById(lessonId);
-        if (lesson == null){
-            throw new IllegalArgumentException("\033[31mError! The lesson you're trying to book does not exist.\033[0m");
+            SwimmingLesson lesson = findLessonById(lessonId);
+            if (lesson == null) {
+                throw new IllegalArgumentException("\033[31mError! The lesson you're trying to book does not exist.\033[0m");
+            }
+            if (isLessonAlreadyBooked(selectedLearner, lesson)) {
+                throw new IllegalArgumentException("\033[31mError! You already have an existing booking for this lesson."
+                        + "\nTo rebook the same lesson, either you have to attend it or Cancel it.\033[0m");
+            }
+            if (bookLessonForLearner(learnerId, lessonId)) {
+                System.out.println("\033[32mLesson booked successfully.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                //choiceToBookMoreLesson();
+            } else {
+                System.out.println("\033[31mError! Failed to book lesson. It might be because it doesn't match lesson's grade level.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+            }
         }
-        if (isLessonAlreadyBooked(selectedLearner, lesson)) {
-            throw new IllegalArgumentException("\033[31mError! You already have an existing booking for this lesson."
-                                                +"\nTo rebook the same lesson, either you have to attend it or Cancel it.\033[0m");
-        }
-        if (bookLessonForLearner(learnerId, lessonId)) {
-            System.out.println("\033[32mLesson booked successfully.\033[0m");
-            //choiceToBookMoreLesson();
-        }
-        else {
-            System.out.println("\033[31mError! Failed to book lesson. It might be because it doesn't match lesson's grade level.\033[0m");
+        if(choiceOfAction == 2){
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
-
-/*    public void choiceToBookMoreLesson(){
-        int choice;
-        try {
-            System.out.println("Select one action:" + "\n1. Book more lessons." + "\n2. Go back to main menu.");
-            System.out.println("Enter your choice:");
-            choice = sc.nextInt();
-            sc.nextLine();
-            bookMoreLesson(choice);
-        }
-        catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-        }
-        catch(Exception e){
-            System.out.println("\033[31mError! You didn't enter a number.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();
-        }
-    }
-
-    public void bookMoreLesson(int choice) throws IllegalArgumentException{
-        if(choice == 1){
-            bookLesson();
-        }
-        if(choice == 2) {
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-        }
-        else{
-            throw new IllegalArgumentException("\033[31mError! You didn't select an appropriate action.\033[0m");
-        }
-    }*/
 
     // checks if the learnerId is associated with the lessonId in a way that indicates booking but not attendance.
     private boolean isLessonAlreadyBooked(Learner learner, SwimmingLesson lesson) {
@@ -435,60 +399,63 @@ public class SwimmingSchoolSystem {
 
     // helps attend lessons and provide reviews and ratings accordingly
     public void attendLessonAndProvideFeedback() throws IllegalArgumentException{       //exception handled ; refactored
-        System.out.println("\n\033[32mAttending a lesson...\033[0m");
-        int learnerId;
-        try {
-            System.out.println("Enter learner ID:");
-            learnerId = sc.nextInt();
-            sc.nextLine();
-        }
-        catch(Exception e){
-            System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from scanner
-            return;
-        }
+        int choiceOfAction = getUserChoiceOfAction();
+        if(choiceOfAction == 1) {
+            System.out.println("\n\033[32mAttending a lesson...\033[0m");
+            int learnerId;
+            try {
+                System.out.println("Enter learner ID:");
+                learnerId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from scanner
+                return;
+            }
 
-        Learner learner = findLearnerById(learnerId);
-        // checks if the learnerId entered is a registered one,i.e, it should be present inside the learners list
-        if(learner == null ){
-            throw new IllegalArgumentException("\033[31mError! No learner with this ID has been registered yet.\033[0m");
-        }
-        if(learner.getBookedLessonIds().isEmpty()){
-            throw new IllegalArgumentException("\033[31mError! You haven't booked any lesson that you can attend.\033[0m");
-        }
+            Learner learner = findLearnerById(learnerId);
+            // checks if the learnerId entered is a registered one,i.e, it should be present inside the learners list
+            if (learner == null) {
+                throw new IllegalArgumentException("\033[31mError! No learner with this ID has been registered yet.\033[0m");
+            }
+            if (learner.getBookedLessonIds().isEmpty()) {
+                throw new IllegalArgumentException("\033[31mError! You haven't booked any lesson that you can attend.\033[0m");
+            }
 
-        System.out.println("\033[32mBelow is a list of lessons that you can attend:\033[0m");
-        //displays list of bookings that learner has, it's his own list that keeps record of bookings
-        learner.getBookedLessonIds().forEach(id -> {
-            SwimmingLesson lesson = findLessonById(id);
-            System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
-        });
+            System.out.println("\033[32mBelow is a list of lessons that you can attend:\033[0m");
+            //displays list of bookings that learner has, it's his own list that keeps record of bookings
+            learner.getBookedLessonIds().forEach(id -> {
+                SwimmingLesson lesson = findLessonById(id);
+                System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            });
 
-        int lessonId;
-        try {
-            System.out.println("\nEnter ID of the lesson you want to attend: ");
-            lessonId = sc.nextInt();
-            sc.nextLine();
-        }
-        catch(Exception e){
-            System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from scanner
-            return;
-        }
+            int lessonId;
+            try {
+                System.out.println("\nEnter ID of the lesson you want to attend: ");
+                lessonId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from scanner
+                return;
+            }
 
-        SwimmingLesson lesson = findLessonById(lessonId);
-        // checks if the lessonId entered belongs to a lesson that exists,i.e, it should be present inside the list of created lessons
-        if (lesson == null) {
-            throw new IllegalArgumentException("\033[31mError! The lesson you're trying to attend does not exist.\033[0m");
+            SwimmingLesson lesson = findLessonById(lessonId);
+            // checks if the lessonId entered belongs to a lesson that exists,i.e, it should be present inside the list of created lessons
+            if (lesson == null) {
+                throw new IllegalArgumentException("\033[31mError! The lesson you're trying to attend does not exist.\033[0m");
+            }
+            try {
+                //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
+                attendLesson(learner, lesson);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+            }
         }
-        try{
-        //checks  1.if the lesson passed is valid. 2. if learner is enrolled for that particular lesson. if both true enables to provide feedback
-        attendLesson(learner, lesson);
-        }
-        catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
+        if(choiceOfAction == 2){
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
     }
@@ -518,7 +485,7 @@ public class SwimmingSchoolSystem {
     //function created to record feedback
     public void recordRatingAndFeedback(Learner learner, SwimmingLesson lesson){
         System.out.println("\n\033[32mRecording feedback...\033[0m");
-        System.out.println("Please provide a review about the lesson in less than 50 words:");
+        System.out.println("Please provide a review about the lesson in not more than 50 words:");
         String review = sc.nextLine();
         int rating;
         do {
@@ -561,74 +528,78 @@ public class SwimmingSchoolSystem {
 
     // helps in cancelling a booked lesson, also helps in changing the booking,i.e, booking another lesson in place of previous lesson
     public void changeOrCancelBooking() throws IllegalArgumentException {        //exception handled
-        System.out.println("\n\033[32mChanging or cancelling a booking...\033[0m");
-        int learnerId;
-        try {
-            System.out.println("Enter learner ID:");
-            learnerId = sc.nextInt();
-            sc.nextLine();
-        } catch (Exception e) {
-            System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+        int choiceOfAction = getUserChoiceOfAction();
+        if(choiceOfAction == 1) {
+            System.out.println("\n\033[32mChanging or cancelling a booking...\033[0m");
+            int learnerId;
+            try {
+                System.out.println("Enter learner ID:");
+                learnerId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Learner ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from scanner
+                return;
+            }
+
+            Learner learner = findLearnerById(learnerId);
+            //checks if the learnerId entered is a registered one, if so it should be present inside the learners list
+            if (learner == null) {
+                throw new IllegalArgumentException("\033[31mError! No learner with this ID has been registered yet.\033[0m");
+            }
+            //checks if the list that stores the bookings for each learner is empty
+            if (learner.getBookedLessonIds().isEmpty()) {
+                throw new IllegalArgumentException("\033[31mOops! It seems you don't have any bookings to cancel/change.\033[0m");
+            }
+
+            System.out.println("\033[32mBelow is a list of lessons that you have booked:\033[0m");
+            //displays list of bookings that learner has, it's his own list that keeps record of bookings
+            learner.getBookedLessonIds().forEach(id -> {
+                SwimmingLesson lesson = findLessonById(id);
+                System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+            });
+
+            int lessonId;
+            try {
+                System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
+                lessonId = sc.nextInt();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();      // to consume the wrong input from scanner
+                return;
+            }
+
+            SwimmingLesson lesson = findLessonById(lessonId);
+            // checks if the lesson entered by the user is a lesson that has already been created and that's present in the lessons list
+            if (lesson == null) {
+                throw new IllegalArgumentException("\033[31mError! The lesson you're trying to cancel/change does not exist.\033[0m");
+            }
+            // checks if the lesson entered by the user is the one that user has actually booked and not any other available ID's
+            if (!learner.getBookedLessonIds().contains(lessonId)) {
+                throw new IllegalArgumentException("\033[31mError! You cannot change/cancel a lesson that you haven't booked yet.\033[0m");
+            }
+
+            int choice;
+            try {
+                System.out.println("\033[32mSelect one action:" + "\n1. Cancel." + "\n2. Change this booking.\033[0m");
+                System.out.println("Enter your choice:");
+                choice = sc.nextInt();
+                sc.nextLine();
+                chooseToChangeOrCancel(choice, lesson, learner);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+            } catch (Exception e) {
+                System.out.println("\033[31mError! You must enter a number.\033[0m");
+                System.out.println("\033[32mRedirecting to main menu...\033[0m");
+                sc.nextLine();
+            }
+        }
+        if(choiceOfAction == 2){
             System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from scanner
-            return;
-        }
-
-        Learner learner = findLearnerById(learnerId);
-        //checks if the learnerId entered is a registered one, if so it should be present inside the learners list
-        if (learner == null) {
-            throw new IllegalArgumentException("\033[31mError! No learner with this ID has been registered yet.\033[0m");
-        }
-        //checks if the list that stores the bookings for each learner is empty
-        if (learner.getBookedLessonIds().isEmpty()) {
-            throw new IllegalArgumentException("\033[31mOops! It seems you don't have any bookings to cancel/change.\033[0m");
-        }
-
-        System.out.println("\033[32mBelow is a list of lessons that you have booked:\033[0m");
-        //displays list of bookings that learner has, it's his own list that keeps record of bookings
-        learner.getBookedLessonIds().forEach(id -> {
-            SwimmingLesson lesson = findLessonById(id);
-            System.out.println("Lesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
-        });
-
-        int lessonId;
-        try {
-            System.out.println("\nEnter lesson ID of the lesson you want to cancel/change: ");
-            lessonId = sc.nextInt();
-            sc.nextLine();
-        } catch (Exception e) {
-            System.out.println("\033[31mError! Lesson ID must be in numbers.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();      // to consume the wrong input from scanner
-            return;
-        }
-
-        SwimmingLesson lesson = findLessonById(lessonId);
-        // checks if the lesson entered by the user is a lesson that has already been created and that's present in the lessons list
-        if (lesson == null) {
-            throw new IllegalArgumentException("\033[31mError! The lesson you're trying to cancel/change does not exist.\033[0m");
-        }
-        // checks if the lesson entered by the user is the one that user has actually booked and not any other available ID's
-        if (!learner.getBookedLessonIds().contains(lessonId)) {
-            throw new IllegalArgumentException("\033[31mError! You cannot change/cancel a lesson that you haven't booked yet.\033[0m");
-        }
-
-        int choice;
-        try {
-            System.out.println("\033[32mSelect one action:" + "\n1. Cancel." + "\n2. Change this booking.\033[0m");
-            System.out.println("Enter your choice:");
-            choice = sc.nextInt();
-            sc.nextLine();
-            chooseToChangeOrCancel(choice,lesson,learner);
-        }
-        catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-        }
-        catch (Exception e) {
-            System.out.println("\033[31mError! You must enter a number.\033[0m");
-            System.out.println("\033[32mRedirecting to main menu...\033[0m");
-            sc.nextLine();
         }
     }
 
@@ -702,6 +673,7 @@ public class SwimmingSchoolSystem {
         }
     }
 
+    //cancels booking
     public boolean cancelBooking(int learnerId, int lessonId) {
         SwimmingLesson lesson = findLessonById(lessonId);
         if (lesson != null && lesson.removeLearner(learnerId)) {        //this statement checks the validity of the lesson, also removes the learner from the lesson using learnerId
@@ -717,6 +689,7 @@ public class SwimmingSchoolSystem {
         return false;
     }
 
+    //changes booking
     public boolean changeBooking(int learnerId, int oldLessonId, int newLessonId) {
         // checks if booking is cancelled and new lesson can be added
         return cancelBooking(learnerId, oldLessonId) && bookLessonForLearner(learnerId, newLessonId);   //returns true if both the condition satisfies
@@ -758,7 +731,10 @@ public class SwimmingSchoolSystem {
             }
             System.out.println("-------------------------------------------");
         }
+        System.out.println("\033[32mRedirecting to main menu...\033[0m");
     }
+
+    //generates monthly coach report till current time.
     public void generateMonthlyCoachReport() {
         System.out.println("\n\033[32m#--------------Monthly Coach Report--------------#\033[0m");
         for (Coach coach : coaches) {
@@ -768,6 +744,7 @@ public class SwimmingSchoolSystem {
             System.out.println("Average Rating: " + averageRating);
             System.out.println("------------------------------------------------");
         }
+        System.out.println("\033[32mRedirecting to main menu...\033[0m");
     }
 
     //displays all registered learners
@@ -777,11 +754,11 @@ public class SwimmingSchoolSystem {
         }
     }
 
-    public void showAllCoaches(){
+    /*public void showAllCoaches(){
         for (Coach coach: coaches){
             System.out.println(coach.toString());
         }
-    }
+    }*/
 
     private Coach findCoachById(int coachId) {      //returns Coach object according to the coachID
         for (Coach coach : coaches) {
