@@ -16,13 +16,13 @@ class CoachTest {
     }
 
     @Test
-    void addRating() {
+    void testAddRating() {
         coach.addRating(validRating1);
         assertTrue(coach.getRatings().contains(validRating1), "Added rating should be in the coach's ratings list.");
     }
 
     @Test
-    void calculateAverageRating() {
+    void testCalculateAverageRating() {
         coach.addRating(validRating1);
         coach.addRating(validRating2);
         double expectedAverage = (validRating1 + validRating2) / 2.0;
