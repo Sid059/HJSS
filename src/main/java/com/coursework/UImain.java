@@ -5,14 +5,19 @@ import java.util.Scanner;
 
 public class UImain {
     public static void main(String[] args) {
+        //creating pre-registered learners, coaches, and lessons
         AddLearnersCoachesLessons.addLearners();
         AddLearnersCoachesLessons.addCoaches();
         AddLearnersCoachesLessons.addLessons();
-        SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
+        //it automatically books lessons, attends lessons, cancels lessons for pre-registered learners
+        AutoLessonManager lessonManager = new AutoLessonManager();
+        lessonManager.autoBookLessonsForLearners();
+        lessonManager.autoCancelBookingsForLearners();
+        lessonManager.autoAttendAndRateLessons();
 
+        SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
         Scanner sc = new Scanner(System.in);
         boolean flag = true;
-
         while (flag) {
             System.out.println("\n\033[32m#-------------M E N U-------------#\033[0m");
             for (String s : List.of("\033[32m\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t7. Show Pre-registered learners\n" + "\t0. To exit\033[0m")) {
@@ -51,8 +56,7 @@ public class UImain {
                 case 3: //attend a swimming lesson
                     try {
                         sss.attendLessonAndProvideFeedback();
-                    }
-                    catch (IllegalArgumentException e) {
+                    } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                         System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }
@@ -66,8 +70,7 @@ public class UImain {
                 case 6: //register a new learner
                     try {
                         sss.registerNewLearner();
-                    }
-                    catch(IllegalArgumentException e){
+                    } catch(IllegalArgumentException e){
                         System.out.println(e.getMessage());
                         System.out.println("\033[32mRedirecting to main menu...\033[0m");
                     }

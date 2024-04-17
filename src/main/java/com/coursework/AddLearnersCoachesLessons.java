@@ -16,6 +16,7 @@ public class AddLearnersCoachesLessons {
         learners.add(new Learner("Abdul Rahman Ampili",'M',7,"07746734215",2));
         learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",1));
     }
+
     public static void addCoaches(){
         coaches.add(new Coach("Donald",1));
         coaches.add(new Coach("Ralph",2));
@@ -23,6 +24,7 @@ public class AddLearnersCoachesLessons {
         coaches.add(new Coach("Spencer",4));
         coaches.add(new Coach("Mike",5));
     }
+
     public static void addLessons(){
         // Hardcoding lessons with the associated coachId
         String[] weekdays = {"Monday", "Wednesday", "Friday"};
@@ -31,7 +33,6 @@ public class AddLearnersCoachesLessons {
         Integer[] weekdaysGrades = {1, 2, 3}; // Assigning a specific grade to each time slot for weekdays
         String[] weekendTimeSlots = {"2-3pm", "3-4pm"};
         Integer[] weekendGrades = {4, 5}; // Assigning a specific grade to each time slot for weekends
-
         // Loop for 4 weeks
         for (int week = 1; week <= 4; week++) {
             // Weekday lessons
