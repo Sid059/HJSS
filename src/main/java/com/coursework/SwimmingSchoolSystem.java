@@ -4,75 +4,18 @@ import java.util.*;
 
 public class SwimmingSchoolSystem {
     Scanner sc = new Scanner(System.in);
-    private List<Learner> learners = new ArrayList<>(); //array list to store learners(junior learners)
-    private List<Coach> coaches = new ArrayList<>(); //array list to store coaches
-    private List<SwimmingLesson> lessons = new ArrayList<>(); //array list to store lessons
+    public static List<Learner> learners = new ArrayList<>(); //array list to store learners(junior learners)
+    public static List<Coach> coaches = new ArrayList<>(); //array list to store coaches
+    public static List<SwimmingLesson> lessons = new ArrayList<>(); //array list to store lessons
 
     public List<Learner> getLearners(){
-        return new ArrayList<>(learners);       //for testing purpose
+        return new ArrayList<>(learners);       //returns learners; used for testing purpose
     }
 
     public SwimmingSchoolSystem(){
-        initializeCoaches();
-        initializeLessons();
-        initializePreregisteredLearners();
         autoBookLessonsForLearners();   //function that will book lessons for previous learners
         autoCancelBookingsForLearners();    //function that will cancel lessons for previous learners
         autoAttendAndRateLessons();     //function that will attend lessons for previous learners
-    }
-
-    private void initializePreregisteredLearners(){
-        learners.add(new Learner("Siddharth Rai", 'M',7,"07776735735",4));
-        learners.add(new Learner("Sahil Gurung",'M',6,"07766347322",5));
-        learners.add(new Learner("Sohit Rai",'M',5,"07756735455",2));
-        learners.add(new Learner("Bikash Chhetri",'M',8,"07746734335",1));
-        learners.add(new Learner("Rohan Chhetri",'M',8,"07746734325",2));
-        learners.add(new Learner("Amir Subba",'M',8,"07746734310",4));
-        learners.add(new Learner("Bishal Chhetri",'M',10,"07746734315",3));
-        learners.add(new Learner("Tushar Kumar Rai",'M',7,"07746734305",5));
-        learners.add(new Learner("Shahzab Ahmad Khan",'M',7,"07746734205",3));
-        learners.add(new Learner("Abdul Rahman Ampili",'M',7,"07746734215",2));
-        learners.add(new Learner("Mandar Vishwas Chavan",'M',7,"07746734115",1));
-    }
-
-    private void initializeCoaches() {
-        coaches.add(new Coach("Donald",1));
-        coaches.add(new Coach("Ralph",2));
-        coaches.add(new Coach("Smith",3));
-        coaches.add(new Coach("Spencer",4));
-        coaches.add(new Coach("Mike",5));
-    }
-
-    private void initializeLessons() {
-        // Hardcoding lessons with the associated coachId
-        String[] weekdays = {"Monday", "Wednesday", "Friday"};
-        String[] weekend = {"Saturday"};
-        String[] weekdaysTimeSlots = {"4-5pm", "5-6pm", "6-7pm"};
-        Integer[] weekdaysGrades = {1, 2, 3}; // Assigning a specific grade to each time slot for weekdays
-        String[] weekendTimeSlots = {"2-3pm", "3-4pm"};
-        Integer[] weekendGrades = {4, 5}; // Assigning a specific grade to each time slot for weekends
-
-        // Loop for 4 weeks
-        for (int week = 1; week <= 4; week++) {
-            // Weekday lessons
-            for (String day : weekdays) {
-                for (int i = 0; i < weekdaysTimeSlots.length; i++) {
-                    String timeSlot = weekdaysTimeSlots[i];
-                    int grade = weekdaysGrades[i];
-                    int coachId = grade; // Simplifying assumption: coach ID matches grade
-                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId));
-                }
-            }
-            // Weekend lessons (Saturday)
-            for (String day : weekend) {
-                for (int i = 0; i < weekendTimeSlots.length; i++) {
-                    String timeSlot = weekendTimeSlots[i];
-                    int grade = weekendGrades[i];
-                    int coachId = grade; // Simplifying assumption: coach ID matches grade
-                    lessons.add(new SwimmingLesson(grade, day, timeSlot, coachId));
-                }
-            }
-        }
     }
 
     //assuming this is for the month of march
@@ -223,7 +166,7 @@ public class SwimmingSchoolSystem {
     }
 
     // displays lessons
-    public void runLessonDisplayInterface() throws IllegalArgumentException {     //exception handled
+    public void runLessonDisplayInterface() throws IllegalArgumentException {
         System.out.println("\033[32m#-------------------Days & Timings---------------------#"
                 + "\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
                 + "\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
@@ -323,7 +266,7 @@ public class SwimmingSchoolSystem {
     }
 
     //books lesson for learner
-    public void bookLesson() throws IllegalArgumentException {                  //exception handled
+    public void bookLesson() throws IllegalArgumentException {
         System.out.println();   //extra line
         int choiceOfAction = getUserChoiceOfAction();
         if (choiceOfAction == 1) {
@@ -751,16 +694,11 @@ public class SwimmingSchoolSystem {
 
     //displays all registered learners
     public void showAllLearners(){
+        System.out.println("\033[32mRegistered Learners:\033[0m");
         for (Learner stud: learners){
             System.out.println("Name: "+stud.getName()+", ID: "+stud.getId()+", Grade Level: "+stud.getGradeLevel());
         }
     }
-
-    /*public void showAllCoaches(){
-        for (Coach coach: coaches){
-            System.out.println(coach.toString());
-        }
-    }*/
 
     private Coach findCoachById(int coachId) {      //returns Coach object according to the coachID
         for (Coach coach : coaches) {

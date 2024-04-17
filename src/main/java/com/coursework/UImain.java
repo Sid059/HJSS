@@ -5,6 +5,9 @@ import java.util.Scanner;
 
 public class UImain {
     public static void main(String[] args) {
+        AddLearnersCoachesLessons.addLearners();
+        AddLearnersCoachesLessons.addCoaches();
+        AddLearnersCoachesLessons.addLessons();
         SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
 
         Scanner sc = new Scanner(System.in);

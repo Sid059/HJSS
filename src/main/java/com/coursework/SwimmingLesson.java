@@ -12,7 +12,6 @@ public class SwimmingLesson {
     private String day;
     private String timeSlot;
     private int coachId;
-    //private int week;       //need to check into this variable, whether to use ot or not
     private Set<Integer> learnerIds;    // stores IDs of the learners that are for a particular lesson. this will be created for each instance of lesson.
     private final int maxLearners = 4;  // max capacity of learners that each lesson can hold
     private Map<Integer, String> reviews; // Learner ID to review text
@@ -23,7 +22,6 @@ public class SwimmingLesson {
         this.day = day;
         this.timeSlot = timeSlot;
         this.coachId = coachId;
-        //this.week = week;
         this.learnerIds = new HashSet<>();
         this.reviews = new HashMap<>();
     }
@@ -44,8 +42,6 @@ public class SwimmingLesson {
     public int getCoachId() {
         return coachId;
     }
-
-    //public int getWeek(){ return week; }        //haven't used this one yet
 
     public int getMaxLearners(){ return maxLearners; }
 
@@ -85,10 +81,6 @@ public class SwimmingLesson {
     public boolean isLearnerEnrolled(int learnerId) {
         return learnerIds.contains(learnerId);
     }
-
-    //public Map<Integer, String> getAllReviews() {         // in case if one wants to see reviews
-    //    return new HashMap<>(reviews); // Protect the internal structure
-    //}
 
     // if you just want to fetch a specific learner's review for that particular lesson
     public String getReview(int learnerId) {
