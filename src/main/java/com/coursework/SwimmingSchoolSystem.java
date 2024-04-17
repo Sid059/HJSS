@@ -101,11 +101,11 @@ public class SwimmingSchoolSystem {
 
     // displays lessons
     public void runLessonDisplayInterface() throws IllegalArgumentException {
-        System.out.println("\033[32m#-------------------Days & Timings---------------------#"
-                + "\n|   Monday   |  Wednesday  |   Friday   |   Saturday |"
-                + "\n|   4-5pm    |    4-5pm    |    4-5pm   |    2-3pm   |"
-                + "\n|   5-6pm    |    5-6pm    |    5-6pm   |    3-4pm   |"
-                + "\n|   6-7pm    |    6-7pm    |    6-7pm   |    Off     |\033[0m");
+        System.out.println("\033[32m#------------------Days & Timings--------------------#\033[0m");
+        System.out.println("\u001B[4m\033[32m|   Monday   |  Wednesday  |   Friday   |   Saturday |\u001B[0m"
+                            + "\n\033[32m|\033[0m   4-5pm    \033[32m|\033[0m    4-5pm    \033[32m|\033[0m    4-5pm   \033[32m|\033[0m    2-3pm   \033[32m|\033[0m"
+                            + "\n\033[32m|\033[0m   5-6pm    \033[32m|\033[0m    5-6pm    \033[32m|\033[0m    5-6pm   \033[32m|\033[0m    3-4pm   \033[32m|\033[0m"
+                            + "\n\033[32m|\033[0m   6-7pm    \033[32m|\033[0m    6-7pm    \033[32m|\033[0m    6-7pm   \033[32m|\033[0m    Off     \033[32m|\033[0m");
         System.out.println("\nHow would you like to view the available lessons ?" + "\nType 'day' to filter by day, 'grade' to filter by grade level, or 'coach' to filter by coach's name:");
         String filterType = sc.next();
         sc.nextLine();
@@ -555,51 +555,57 @@ public class SwimmingSchoolSystem {
 
     // generates report till current time. Includes details about the lessons
     public void generateMonthlyLearnerReport() {
-        System.out.println("\033[32m#--------------Monthly Learner Report--------------#\033[0m");
-        for (Learner learner : learners) {
-            System.out.println("\nLearner Name: " + learner.getName());
-            System.out.println("Learner ID: " + learner.getId());
-            // Shows current booked Lessons
-            System.out.println("Booked Lessons: " + learner.getBookedLessonIds().size());
-            for (Integer lessonId : learner.getBookedLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+        int selectedValue = getMonthNumber();
+        if (selectedValue == 3) {
+            System.out.println("\033[32m#--------------Monthly Learner Report--------------#\033[0m");
+            for (Learner learner : learners) {
+                System.out.println("\nLearner Name: " + learner.getName());
+                System.out.println("Learner ID: " + learner.getId());
+                // Shows current booked Lessons
+                System.out.println("Booked Lessons: " + learner.getBookedLessonIds().size());
+                for (Integer lessonId : learner.getBookedLessonIds()) {
+                    SwimmingLesson lesson = findLessonById(lessonId);
+                    if (lesson != null) {
+                        System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                    }
                 }
-            }
-            // Attended Lessons and Reviews
-            System.out.println("\nAttended Lessons: " + learner.getAttendedLessonIds().size());
-            for (Integer lessonId : learner.getAttendedLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    //String review = lesson.getReview(selectedLearner.getId());
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                // Attended Lessons and Reviews
+                System.out.println("\nAttended Lessons: " + learner.getAttendedLessonIds().size());
+                for (Integer lessonId : learner.getAttendedLessonIds()) {
+                    SwimmingLesson lesson = findLessonById(lessonId);
+                    if (lesson != null) {
+                        //String review = lesson.getReview(selectedLearner.getId());
+                        System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                    }
                 }
-            }
-            // Canceled Lessons
-            System.out.println("\nCanceled Lessons: " + learner.getCanceledLessonIds().size());
-            for (Integer lessonId : learner.getCanceledLessonIds()) {
-                SwimmingLesson lesson = findLessonById(lessonId);
-                if (lesson != null) {
-                    System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                // Canceled Lessons
+                System.out.println("\nCanceled Lessons: " + learner.getCanceledLessonIds().size());
+                for (Integer lessonId : learner.getCanceledLessonIds()) {
+                    SwimmingLesson lesson = findLessonById(lessonId);
+                    if (lesson != null) {
+                        System.out.println("\tLesson ID: " + lesson.getId() + ", Grade: " + lesson.getGrade() + ", Day: " + lesson.getDay() + ", Time: " + lesson.getTimeSlot());
+                    }
                 }
+                System.out.println("-------------------------------------------");
             }
-            System.out.println("-------------------------------------------");
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
-        System.out.println("\033[32mRedirecting to main menu...\033[0m");
     }
 
     //generates monthly coach report till current time.
     public void generateMonthlyCoachReport() {
-        System.out.println("\n\033[32m#--------------Monthly Coach Report--------------#\033[0m");
-        for (Coach coach : coaches) {
-            // Assuming each Coach object has a method to calculate the average rating
-            double averageRating = coach.calculateAverageRating();
-            System.out.println("Coach Name: " + coach.getName());
-            System.out.printf("Average Rating: %1.2f\n",averageRating);
-            System.out.println("------------------------------------------------");
+        int selectedValue = getMonthNumber();
+        if (selectedValue == 3) {
+            System.out.println("\n\033[32m#--------------Monthly Coach Report--------------#\033[0m");
+            for (Coach coach : coaches) {
+                // Assuming each Coach object has a method to calculate the average rating
+                double averageRating = coach.calculateAverageRating();
+                System.out.println("Coach Name: " + coach.getName());
+                System.out.printf("Average Rating: %1.2f\n", averageRating);
+                System.out.println("------------------------------------------------");
+            }
+            System.out.println("\033[32mRedirecting to main menu...\033[0m");
         }
-        System.out.println("\033[32mRedirecting to main menu...\033[0m");
     }
 
     //displays all registered learners
@@ -635,5 +641,25 @@ public class SwimmingSchoolSystem {
             }
         }
         return null; // Return null if no lesson matches the given ID
+    }
+
+    private int getMonthNumber() {
+        System.out.println("\033[32mReport available for:\033[0m");
+        System.out.println("\u001B[4m\033[32m|Month no.|\t   Month\t|\033[0m\u001B[0m");      //assuming that report is only available for March
+        System.out.println("\033[32m|\033[0m\t3.\t  \033[32m|\033[0m\t   March\t\033[32m|\033[0m");
+        System.out.println("Enter month number:");
+        try {
+            int monthNumber = sc.nextInt();
+            sc.nextLine();
+            if (monthNumber != 3) {
+                System.out.println("\033[31mError! Invalid choice. Please enter a month number that's available on your screen.\033[0m");
+                return getMonthNumber(); // Recursive call if invalid input
+            }
+            return monthNumber;
+        } catch (Exception e) {
+            System.out.println("\033[31mError! You didn't enter a month number.\nPlease enter a month number that's available on your screen.\033[0m");
+            sc.nextLine(); // Clear the buffer
+            return getMonthNumber(); // Recursive call if exception thrown
+        }
     }
 }

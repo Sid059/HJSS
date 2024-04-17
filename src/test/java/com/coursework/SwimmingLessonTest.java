@@ -17,35 +17,27 @@ public class SwimmingLessonTest {
     }
 
     @Test
-    void testAddLearner_CapacityNotFull() {
-        assertTrue(lesson.addLearner(101), "Should successfully add a learner when lesson's capacity is not full");
-    }
-
-    @Test
-    void testAddLearner_CapacityFull() {
+    void testAddLearner() {
+        assertTrue(lesson.addLearner(101));     //Should successfully add a learner when lesson's capacity is not full
         lesson.addLearner(101);
         lesson.addLearner(102);
         lesson.addLearner(103);
         lesson.addLearner(104); //at this point the lesson's capacity gets full
-        assertFalse(lesson.addLearner(105), "Should not add a learner when lesson's capacity is full");
+        assertFalse(lesson.addLearner(105));        //Should not add a learner when lesson's capacity is full
     }
 
     @Test
     void testRemoveLearner_Enrolled() {
         lesson.addLearner(201);
         lesson.addLearner(202);
-        assertTrue(lesson.removeLearner(201), "Should successfully remove a learner who is enrolled in that particular lesson.");
-    }
-
-    @Test
-    void testRemoveLearner_NotEnrolled() {
-        assertFalse(lesson.removeLearner(203), "Should not remove a learner who is not enrolled in that particular lesson.");
+        assertTrue(lesson.removeLearner(201));      //Should successfully remove a learner who is enrolled in that particular lesson
+        assertFalse(lesson.removeLearner(203));     //Should not remove a learner who is not enrolled in that particular lesson
     }
 
     @Test
     void testIsLearnerEnrolled() {
         lesson.addLearner(301);
-        assertTrue(lesson.isLearnerEnrolled(301), "Should return true for an enrolled learner");
-        assertFalse(lesson.isLearnerEnrolled(302), "Should return false for a learner not enrolled");
+        assertTrue(lesson.isLearnerEnrolled(301));      //Should return true for an enrolled learner
+        assertFalse(lesson.isLearnerEnrolled(302));     //Should return false for a learner not enrolled
     }
 }

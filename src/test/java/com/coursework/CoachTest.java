@@ -18,7 +18,7 @@ class CoachTest {
     @Test
     void testAddRating() {
         coach.addRating(validRating1);
-        assertTrue(coach.getRatings().contains(validRating1), "Added rating should be in the coach's ratings list.");
+        assertTrue(coach.getRatings().contains(validRating1));      //Added rating should be in the coach's ratings list
     }
 
     @Test
@@ -26,7 +26,7 @@ class CoachTest {
         coach.addRating(validRating1);
         coach.addRating(validRating2);
         double expectedAverage = (validRating1 + validRating2) / 2.0;
-        assertEquals(expectedAverage, coach.calculateAverageRating(), "Average rating should match the expected value.");
+        assertEquals(expectedAverage, coach.calculateAverageRating());      //Added rating should be in the coach's ratings list
     }
 
 }
