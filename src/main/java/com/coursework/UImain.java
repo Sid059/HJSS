@@ -18,9 +18,17 @@ public class UImain {
         SwimmingSchoolSystem sss = new SwimmingSchoolSystem();
         Scanner sc = new Scanner(System.in);
         boolean flag = true;
+        System.out.println("\033[32mWelcome to Hatfiled Junior Swimming School System.\033[0m");
+        try {
+            Thread.sleep(1000);
+            System.out.println("\033[32mLoading main menu...\033[0m");
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         while (flag) {
             System.out.println("\n\033[32m#-------------M E N U-------------#\033[0m");
-            for (String s : List.of("\033[32m\t1. Book a swimming lesson\n" + "\t2. Change/Cancel a booking\n" + "\t3. Attend a swimming lesson\n" + "\t4. Monthly learner report\n" + "\t5. Monthly coach report\n" + "\t6. Register a new learner\n" + "\t7. Show Pre-registered learners\n" + "\t0. To exit\033[0m")) {
+            for (String s : List.of("\033[32m\t1. Book a swimming lesson.\n" + "\t2. Change/Cancel a booking.\n" + "\t3. Attend a swimming lesson.\n" + "\t4. View monthly learner report.\n" + "\t5. View monthly coach report.\n" + "\t6. Register a new learner.\n" + "\t7. View pre-registered learners.\n" + "\t8. Exit.\033[0m")) {
                 System.out.println(s);
             }
             int choice = 0;
@@ -78,7 +86,7 @@ public class UImain {
                 case 7: //view all learners
                     sss.showAllLearners();
                     break;
-                case 0:
+                case 8:
                     flag = false;
                     System.out.println("\033[32mExiting system...\033[0m");
                     break;
@@ -88,6 +96,3 @@ public class UImain {
         }
     }
 }
-
-
-

@@ -28,5 +28,4 @@ class CoachTest {
         double expectedAverage = (validRating1 + validRating2) / 2.0;
         assertEquals(expectedAverage, coach.calculateAverageRating());      //Added rating should be in the coach's ratings list
     }
-
 }
